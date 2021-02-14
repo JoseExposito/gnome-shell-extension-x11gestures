@@ -1,0 +1,21 @@
+{
+  "name": "io.github.joseexposito.x11gestures",
+  "version": "1.0.0",
+  "description": "",
+  "author": "José Expósito",
+  "license": "GPL-3.0-or-later",
+  "main": "extension.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/eslint-parser": "^7.12.13",
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-header": "^3.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^31.6.1"
+  }
+}

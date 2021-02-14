@@ -1,0 +1,9 @@
+{
+  "name": "X11 Gestures",
+  "description": "Enable muti-touch gestures on X11, requires Touchégg",
+  "uuid": "x11gestures@joseexposito.github.io",
+  "version": 1,
+  "shell-version": [
+    "3.38"
+  ]
+}

@@ -94,6 +94,10 @@ const ToucheggClient = GObject.registerClass({
     // middle of a gesture we can finish it
     this.lastSignalReceived = null;
     this.lastParamsReceived = null;
+
+    this.touchpadSettings = new Gio.Settings({
+      schema_id: 'org.gnome.desktop.peripherals.touchpad',
+    });
   }
 
   async stablishConnection() {
@@ -215,12 +219,12 @@ const ToucheggClient = GObject.registerClass({
         break;
       }
       case DBUS_ON_GESTURE_UPDATE: {
-        // TODO Use the natural scrolling user preferences
-        const percentageDelta = (direction === GestureDirection.LEFT
-          || direction === GestureDirection.UP)
+        const percentageDelta = (direction === GestureDirection.RIGHT
+          || direction === GestureDirection.DOWN)
           ? (percentage - this.previosPercentage)
           : (this.previosPercentage - percentage);
-        const delta = percentageDelta * PERCENTAGE_MULTIPLIER;
+        const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
+        const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
         this.previosPercentage = percentage;
         this.emit('update', time, delta);
         break;

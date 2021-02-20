@@ -22,23 +22,24 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { toucheggClient } = SRC.ToucheggClient;
+const { logger } = SRC.utils.Logger;
 
 class ToucheggSwipeTrackerClass extends SwipeTracker {
   _init(actor, allowedModes, params) {
     super._init(actor, allowedModes, params);
-    log('Creating a new ToucheggSwipeTracker');
+    logger.log('Creating a new ToucheggSwipeTracker');
 
     // SwipeTracker creates its own class to handle touchpad gestures
     // As we are going to replace it with our custom implementation, delete it to avoid possible
     // duplicated events
-    log('Removing this._touchpadGesture');
+    logger.log('Removing this._touchpadGesture');
     if (this._touchpadGesture) {
       this._touchpadGesture.destroy();
       delete this._touchpadGesture;
     }
 
     // Connect the Touchégg client to the swipe tracker to start receiving events
-    log('Connecting Touchégg client signals');
+    logger.log('Connecting Touchégg client signals');
     toucheggClient.connect('begin', this._beginGesture.bind(this));
     toucheggClient.connect('update', this._updateGesture.bind(this));
     toucheggClient.connect('end', this._endGesture.bind(this));

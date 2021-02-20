@@ -24,7 +24,9 @@ const {
   Gdk,
 } = imports.gi;
 
-const { GestureType, GestureDirection, DeviceType } = imports['x11gestures@joseexposito.github.io'].src.ToucheggTypes;
+const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
+const { GestureType, GestureDirection, DeviceType } = SRC.ToucheggTypes;
+const { logger } = SRC.utils.Logger;
 
 /**
  * Daemon D-Bus address.
@@ -99,21 +101,21 @@ const ToucheggClient = GObject.registerClass({
 
     while (!connected) {
       try {
-        log('Connecting to Touchégg daemon');
+        logger.log('Connecting to Touchégg daemon');
         // eslint-disable-next-line no-await-in-loop
         this.connection = await ToucheggClient.dbusConnect();
 
-        log('Connection with Touchégg established');
+        logger.log('Connection with Touchégg established');
         connected = true;
 
         this.connection.signal_subscribe(null, DBUS_INTERFACE_NAME, null, DBUS_OBJECT_PATH,
           null, Gio.DBusSignalFlags.NONE, this.onNewMessage);
         this.connection.connect('closed', this.onDisconnected);
       } catch (error) {
-        log(`Error connecting to Touchégg daemon: ${error && error.message}`);
+        logger.log(`Error connecting to Touchégg daemon: ${error && error.message}`);
         connected = false;
 
-        log('Reconnecting to Touchégg daemon in 5 seconds');
+        logger.log('Reconnecting to Touchégg daemon in 5 seconds');
         await ToucheggClient.sleep(RECONNECTION_SLEEP_TIME); // eslint-disable-line no-await-in-loop
       }
     }
@@ -162,12 +164,12 @@ const ToucheggClient = GObject.registerClass({
   }
 
   onNewMessage(connection, senderName, objectPath, interfaceName, signalName, parameters) {
-    // log('On new message');
-    // log(`senderName: ${senderName}`);
-    // log(`objectPath: ${objectPath}`);
-    // log(`interfaceName: ${interfaceName}`);
-    // log(`signalName: ${signalName}`);
-    // log(`parameters: ${parameters}`);
+    // logger.log('On new message');
+    // logger.log(`senderName: ${senderName}`);
+    // logger.log(`objectPath: ${objectPath}`);
+    // logger.log(`interfaceName: ${interfaceName}`);
+    // logger.log(`signalName: ${signalName}`);
+    // logger.log(`parameters: ${parameters}`);
 
     this.lastSignalReceived = signalName;
     this.lastParamsReceived = parameters;
@@ -176,11 +178,11 @@ const ToucheggClient = GObject.registerClass({
   }
 
   onDisconnected(connection, remotePeerVanished, error) {
-    log(`Connection with Touchégg daemon lost: ${error && error.message}`);
+    logger.log(`Connection with Touchégg daemon lost: ${error && error.message}`);
 
     if (this.lastSignalReceived === DBUS_ON_GESTURE_BEGIN
         || this.lastSignalReceived === DBUS_ON_GESTURE_UPDATE) {
-      log('Connection lost in the middle of a gesture, ending it');
+      logger.log('Connection lost in the middle of a gesture, ending it');
       this.emitGestureEvent(DBUS_ON_GESTURE_END, this.lastParamsReceived);
     }
 
@@ -190,7 +192,7 @@ const ToucheggClient = GObject.registerClass({
     if (remotePeerVanished || error) {
       this.stablishConnection();
     } else {
-      log('Connection manually closed, not reconnecting to the daemon');
+      logger.log('Connection manually closed, not reconnecting to the daemon');
     }
   }
 

@@ -49,10 +49,11 @@
   },
   "globals": {
     "log": "readonly",
+    "logError": "readonly",
     "imports": "readonly",
     "pkg": "readonly",
     "_": "readonly",
     "window": "readonly",
-    "Granite": "readonly"
+    "globalThis": "readonly"
   }
 }

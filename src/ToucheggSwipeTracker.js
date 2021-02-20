@@ -24,10 +24,32 @@ const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { toucheggClient } = SRC.ToucheggClient;
 const { logger } = SRC.utils.Logger;
 
+/**
+ * SwipeTracker clone that receives multi-touch events from ToucheggClient.
+ */
 class ToucheggSwipeTrackerClass extends SwipeTracker {
-  _init(actor, allowedModes, params) {
+  /**
+   * Default constructor.
+   *
+   * @param {object} actor @see SwipeTracker.
+   * @param {number} allowedModes @see SwipeTracker.
+   * @param {object} params @see SwipeTracker.
+   * @param {object} toucheggSettings Touchégg settings. Shape:
+   *   {
+   *     types: <Array of allowed GestureType>,
+   *     fingers: <Array of allowed number of fingers>,
+   *     directions: <Array of allowed GestureDirection>,
+   *     devices: <Array of allowed device types>,
+   *   }.
+   */
+  _init(actor, allowedModes, params, toucheggSettings) {
     super._init(actor, allowedModes, params);
     logger.log('Creating a new ToucheggSwipeTracker');
+
+    this.toucheggSettings = toucheggSettings;
+    this.onToucheggGestureBegin = this.onToucheggGestureBegin.bind(this);
+    this.onToucheggGestureUpdate = this.onToucheggGestureUpdate.bind(this);
+    this.onToucheggGestureEnd = this.onToucheggGestureEnd.bind(this);
 
     // SwipeTracker creates its own class to handle touchpad gestures
     // As we are going to replace it with our custom implementation, delete it to avoid possible
@@ -40,11 +62,50 @@ class ToucheggSwipeTrackerClass extends SwipeTracker {
 
     // Connect the Touchégg client to the swipe tracker to start receiving events
     logger.log('Connecting Touchégg client signals');
-    toucheggClient.connect('begin', this._beginGesture.bind(this));
-    toucheggClient.connect('update', this._updateGesture.bind(this));
-    toucheggClient.connect('end', this._endGesture.bind(this));
+    toucheggClient.connect('begin', this.onToucheggGestureBegin);
+    toucheggClient.connect('update', this.onToucheggGestureUpdate);
+    toucheggClient.connect('end', this.onToucheggGestureEnd);
     this.bind_property('enabled', toucheggClient, 'enabled', 0);
     this.bind_property('orientation', toucheggClient, 'orientation', 0);
+  }
+
+  onToucheggGestureBegin(gesture, type, fingers, direction, device, time, x, y) {
+    logger.log('onToucheggGestureBegin');
+    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+      this._beginGesture(gesture, time, x, y);
+    }
+  }
+
+  onToucheggGestureUpdate(gesture, type, fingers, direction, device, time, delta) {
+    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+      this._updateGesture(gesture, time, delta);
+    }
+  }
+
+  onToucheggGestureEnd(gesture, type, fingers, direction, device, time) {
+    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+      this._endGesture(gesture, time);
+    }
+  }
+
+  gestureMatchesSettings(type, fingers, direction, device) {
+    if (!this.toucheggSettings.types.includes(type)) {
+      return false;
+    }
+
+    if (!this.toucheggSettings.fingers.includes(fingers)) {
+      return false;
+    }
+
+    if (!this.toucheggSettings.directions.includes(direction)) {
+      return false;
+    }
+
+    if (!this.toucheggSettings.devices.includes(device)) {
+      return false;
+    }
+
+    return true;
   }
 }
 

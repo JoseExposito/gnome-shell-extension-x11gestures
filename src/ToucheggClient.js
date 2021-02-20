@@ -25,7 +25,7 @@ const {
 } = imports.gi;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { GestureType, GestureDirection, DeviceType } = SRC.ToucheggTypes;
+const { GestureDirection } = SRC.ToucheggTypes;
 const { logger } = SRC.utils.Logger;
 
 /**
@@ -80,9 +80,36 @@ const ToucheggClient = GObject.registerClass({
     ),
   },
   Signals: {
-    begin: { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE, GObject.TYPE_DOUBLE] },
-    update: { param_types: [GObject.TYPE_UINT, GObject.TYPE_DOUBLE] },
-    end: { param_types: [GObject.TYPE_UINT] },
+    begin: {
+      param_types: [
+        GObject.TYPE_UINT, // GestureType
+        GObject.TYPE_INT, // Fingers
+        GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_UINT, // DeviceType
+        GObject.TYPE_UINT, // Time
+        GObject.TYPE_DOUBLE, // Mouse X
+        GObject.TYPE_DOUBLE, // Mouse Y
+      ],
+    },
+    update: {
+      param_types: [
+        GObject.TYPE_UINT, // GestureType
+        GObject.TYPE_INT, // Fingers
+        GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_UINT, // DeviceType
+        GObject.TYPE_UINT, // Time
+        GObject.TYPE_DOUBLE, // Delta
+      ],
+    },
+    end: {
+      param_types: [
+        GObject.TYPE_UINT, // GestureType
+        GObject.TYPE_INT, // Fingers
+        GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_UINT, // DeviceType
+        GObject.TYPE_UINT, // Time
+      ],
+    },
   },
 }, class ToucheggClient extends GObject.Object {
   _init() {
@@ -201,21 +228,25 @@ const ToucheggClient = GObject.registerClass({
   }
 
   emitGestureEvent(signalName, parameters) {
-    // const type = parameters.get_child_value(0).get_uint32();
+    const type = parameters.get_child_value(0).get_uint32();
     const direction = parameters.get_child_value(1).get_uint32();
     const percentage = parameters.get_child_value(2).get_double();
-    // const fingers = parameters.get_child_value(3).get_int32();
-    // const performedOnDeviceType = parameters.get_child_value(4).get_uint32();
+    const fingers = parameters.get_child_value(3).get_int32();
+    const performedOnDeviceType = parameters.get_child_value(4).get_uint32();
     const time = Date.now();
 
-    // TODO Handle type and fingers
-    // TODO Should we also handle touchscreen gestures?
+    // logger.log(signalName);
+    // logger.log(type);
+    // logger.log(direction);
+    // logger.log(percentage);
+    // logger.log(fingers);
+    // logger.log(performedOnDeviceType);
 
     switch (signalName) {
       case DBUS_ON_GESTURE_BEGIN: {
         this.previosPercentage = 0;
         const { x, y } = ToucheggClient.getMousePosition();
-        this.emit('begin', time, x, y);
+        this.emit('begin', type, fingers, direction, performedOnDeviceType, time, x, y);
         break;
       }
       case DBUS_ON_GESTURE_UPDATE: {
@@ -226,11 +257,11 @@ const ToucheggClient = GObject.registerClass({
         const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
         const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
         this.previosPercentage = percentage;
-        this.emit('update', time, delta);
+        this.emit('update', type, fingers, direction, performedOnDeviceType, time, delta);
         break;
       }
       case DBUS_ON_GESTURE_END:
-        this.emit('end', time);
+        this.emit('end', type, fingers, direction, performedOnDeviceType, time);
         break;
       default:
         break;

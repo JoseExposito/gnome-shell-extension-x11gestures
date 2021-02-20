@@ -22,6 +22,7 @@ const { wm } = imports.ui.main;
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { ToucheggSwipeTracker } = SRC.ToucheggSwipeTracker;
 const { toucheggClient } = SRC.ToucheggClient;
+const { GestureType, GestureDirection, DeviceType } = SRC.ToucheggTypes;
 const { logger } = SRC.utils.Logger;
 
 class Extension {
@@ -37,6 +38,13 @@ class Extension {
         global.stage,
         Shell.ActionMode.NORMAL,
         { allowDrag: false, allowScroll: false },
+        {
+          types: [GestureType.SWIPE],
+          fingers: [4],
+          directions: [GestureDirection.UP, GestureDirection.DOWN],
+          // TODO Should we handle touchscreen gestures?
+          devices: [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+        },
       );
 
       /* eslint-disable no-underscore-dangle */

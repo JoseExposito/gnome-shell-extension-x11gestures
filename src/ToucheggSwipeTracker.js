@@ -19,7 +19,9 @@
 /* eslint-disable no-underscore-dangle */
 const { GObject } = imports.gi;
 const { SwipeTracker } = imports.ui.swipeTracker;
-const { toucheggClient } = imports['x11gestures@joseexposito.github.io'].src.ToucheggClient;
+
+const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
+const { toucheggClient } = SRC.ToucheggClient;
 
 class ToucheggSwipeTrackerClass extends SwipeTracker {
   _init(actor, allowedModes, params) {

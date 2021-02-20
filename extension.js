@@ -18,18 +18,20 @@
  */
 const { Shell } = imports.gi;
 const { wm } = imports.ui.main;
-// TODO Add a decent way of importing files from the extension
-const { ToucheggSwipeTracker } = imports['x11gestures@joseexposito.github.io'].src.ToucheggSwipeTracker;
-const { toucheggClient } = imports['x11gestures@joseexposito.github.io'].src.ToucheggClient;
+
+const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
+const { ToucheggSwipeTracker } = SRC.ToucheggSwipeTracker;
+const { toucheggClient } = SRC.ToucheggClient;
+const { logger } = SRC.utils.Logger;
 
 class Extension {
   static enable() {
-    log('Extension enabled');
+    logger.log('Extension enabled');
 
     toucheggClient.stablishConnection();
 
     if (wm) {
-      log('Connect ToucheggSwipeTracker to wm');
+      logger.log('Connect ToucheggSwipeTracker to wm');
 
       const tracker = new ToucheggSwipeTracker(
         global.stage,
@@ -47,7 +49,7 @@ class Extension {
   }
 
   static disable() {
-    log('Extension disabled');
+    logger.log('Extension disabled');
     toucheggClient.closeConnection();
   }
 }

@@ -4,6 +4,7 @@ GNOME Shell extensions can be installed in `~/.local/share/gnome-shell/extension
 to start testing your changes is to create a symbolic link:
 
 ```bash
+$ mkdir -p ~/.local/share/gnome-shell/extensions
 $ ln -s `pwd` ~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io
 ```
 

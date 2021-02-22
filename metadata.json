@@ -4,6 +4,7 @@
   "uuid": "x11gestures@joseexposito.github.io",
   "version": 1,
   "shell-version": [
-    "3.38"
+    "3.38",
+    "40.beta"
   ]
 }

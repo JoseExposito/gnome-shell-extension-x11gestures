@@ -16,39 +16,32 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { Meta } = imports.gi;
+const { GObject } = imports.gi;
+const ShellVersion = imports.misc.config.PACKAGE_VERSION;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { EntryPointFactory } = SRC.EntryPointFactory;
-const { toucheggClient } = SRC.touchegg.ToucheggClient;
+const { EntryPoint338 } = SRC.v338.EntryPoint338;
+const { EntryPoint40 } = SRC.v40.EntryPoint40;
 const { logger } = SRC.utils.Logger;
 
-class Extension {
-  static enable() {
-    logger.log('Extension enabled');
+/**
+ * Factory to build an entry point based on the current GNOME Shell version.
+ */
+class EntryPointFactoryClass extends GObject.Object {
+  static buildEntryPoint() {
+    logger.log(`Building entry point for GNOME Shell ${ShellVersion}`);
 
-    if (Meta.is_wayland_compositor()) {
-      logger.log('This extension is only for X11');
-      return;
+    if (ShellVersion.startsWith('3.38')) {
+      return EntryPoint338;
     }
 
-    const entryPoint = EntryPointFactory.buildEntryPoint();
-    if (!entryPoint) {
-      logger.log('This version of GNOME Shell is not supported');
-      return;
+    if (ShellVersion.startsWith('40')) {
+      return EntryPoint40;
     }
 
-    toucheggClient.stablishConnection();
-    entryPoint.start();
-  }
-
-  static disable() {
-    logger.log('Extension disabled');
-    toucheggClient.closeConnection();
+    return null;
   }
 }
 
-// eslint-disable-next-line
-function init() {
-  return Extension;
-}
+var EntryPointFactory = // eslint-disable-line
+  GObject.registerClass(EntryPointFactoryClass);

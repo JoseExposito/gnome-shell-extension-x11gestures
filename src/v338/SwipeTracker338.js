@@ -17,97 +17,90 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 /* eslint-disable no-underscore-dangle */
-const { GObject } = imports.gi;
+const { GObject, Gdk, Gio } = imports.gi;
 const { SwipeTracker } = imports.ui.swipeTracker;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { toucheggClient } = SRC.ToucheggClient;
+const { toucheggClient } = SRC.touchegg.ToucheggClient;
+const { GestureDirection } = SRC.touchegg.ToucheggTypes;
+const { ToucheggSettings } = SRC.touchegg.ToucheggSettings;
 const { logger } = SRC.utils.Logger;
 
 /**
- * SwipeTracker clone that receives multi-touch events from ToucheggClient.
+ * Touchégg percentage multiplier to get a good UX on GNOME Shell.
  */
-class ToucheggSwipeTrackerClass extends SwipeTracker {
+const PERCENTAGE_MULTIPLIER = 0.01;
+
+/**
+ * SwipeTracker clone that receives multi-touch events from ToucheggClient.
+ * Https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/3.38.3/js/ui/swipeTracker.js.
+ */
+class SwipeTracker338Class extends SwipeTracker {
   /**
    * Default constructor.
    *
    * @param {object} actor @see SwipeTracker.
    * @param {number} allowedModes @see SwipeTracker.
    * @param {object} params @see SwipeTracker.
-   * @param {object} toucheggSettings Touchégg settings. Shape:
-   *   {
-   *     types: <Array of allowed GestureType>,
-   *     fingers: <Array of allowed number of fingers>,
-   *     directions: <Array of allowed GestureDirection>,
-   *     devices: <Array of allowed device types>,
-   *   }.
+   * @param {ToucheggSettings} toucheggSettings @see ToucheggSettings.
    */
   _init(actor, allowedModes, params, toucheggSettings) {
     super._init(actor, allowedModes, params);
-    logger.log('Creating a new ToucheggSwipeTracker');
+    logger.log('Creating a new SwipeTracker338');
 
     this.toucheggSettings = toucheggSettings;
+    this.touchpadSettings = new Gio.Settings({
+      schema_id: 'org.gnome.desktop.peripherals.touchpad',
+    });
+
     this.onToucheggGestureBegin = this.onToucheggGestureBegin.bind(this);
     this.onToucheggGestureUpdate = this.onToucheggGestureUpdate.bind(this);
     this.onToucheggGestureEnd = this.onToucheggGestureEnd.bind(this);
-
-    // SwipeTracker creates its own class to handle touchpad gestures
-    // As we are going to replace it with our custom implementation, delete it to avoid possible
-    // duplicated events
-    logger.log('Removing this._touchpadGesture');
-    if (this._touchpadGesture) {
-      this._touchpadGesture.destroy();
-      delete this._touchpadGesture;
-    }
 
     // Connect the Touchégg client to the swipe tracker to start receiving events
     logger.log('Connecting Touchégg client signals');
     toucheggClient.connect('begin', this.onToucheggGestureBegin);
     toucheggClient.connect('update', this.onToucheggGestureUpdate);
     toucheggClient.connect('end', this.onToucheggGestureEnd);
-    this.bind_property('enabled', toucheggClient, 'enabled', 0);
-    this.bind_property('orientation', toucheggClient, 'orientation', 0);
   }
 
-  onToucheggGestureBegin(gesture, type, fingers, direction, device, time, x, y) {
-    logger.log('onToucheggGestureBegin');
-    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+  onToucheggGestureBegin(gesture, type, direction, percentage, fingers, device, time) {
+    this.previosPercentage = 0;
+
+    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
+      const { x, y } = SwipeTracker338Class.getMousePosition();
       this._beginGesture(gesture, time, x, y);
     }
   }
 
-  onToucheggGestureUpdate(gesture, type, fingers, direction, device, time, delta) {
-    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+  onToucheggGestureUpdate(gesture, type, direction, percentage, fingers, device, time) {
+    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
+      const percentageDelta = (direction === GestureDirection.RIGHT
+        || direction === GestureDirection.DOWN)
+        ? (percentage - this.previosPercentage)
+        : (this.previosPercentage - percentage);
+      const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
+      const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
+      this.previosPercentage = percentage;
+
       this._updateGesture(gesture, time, delta);
     }
   }
 
-  onToucheggGestureEnd(gesture, type, fingers, direction, device, time) {
-    if (this.gestureMatchesSettings(type, fingers, direction, device)) {
+  onToucheggGestureEnd(gesture, type, direction, percentage, fingers, device, time) {
+    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
       this._endGesture(gesture, time);
     }
   }
 
-  gestureMatchesSettings(type, fingers, direction, device) {
-    if (!this.toucheggSettings.types.includes(type)) {
-      return false;
-    }
-
-    if (!this.toucheggSettings.fingers.includes(fingers)) {
-      return false;
-    }
-
-    if (!this.toucheggSettings.directions.includes(direction)) {
-      return false;
-    }
-
-    if (!this.toucheggSettings.devices.includes(device)) {
-      return false;
-    }
-
-    return true;
+  static getMousePosition() {
+    const display = Gdk.Display.get_default();
+    const seat = display.get_default_seat();
+    const pointer = seat.get_pointer();
+    const [, x, y] = pointer.get_position();
+    return { x, y };
   }
 }
 
-var ToucheggSwipeTracker = // eslint-disable-line
-  GObject.registerClass(ToucheggSwipeTrackerClass);
+var SwipeTracker338 = // eslint-disable-line
+  GObject.registerClass(SwipeTracker338Class);

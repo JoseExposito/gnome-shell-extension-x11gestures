@@ -20,12 +20,9 @@ const {
   GObject,
   GLib,
   Gio,
-  Clutter,
-  Gdk,
 } = imports.gi;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { GestureDirection } = SRC.ToucheggTypes;
 const { logger } = SRC.utils.Logger;
 
 /**
@@ -50,10 +47,11 @@ const DBUS_ON_GESTURE_BEGIN = 'OnGestureBegin';
 const DBUS_ON_GESTURE_UPDATE = 'OnGestureUpdate';
 const DBUS_ON_GESTURE_END = 'OnGestureEnd';
 
-/**
- * Touchégg percentage multiplier to get a good UX on GNOME Shell.
- */
-const PERCENTAGE_MULTIPLIER = 0.01;
+const DBusSignalToClientSignal = {
+  [DBUS_ON_GESTURE_BEGIN]: 'begin',
+  [DBUS_ON_GESTURE_UPDATE]: 'update',
+  [DBUS_ON_GESTURE_END]: 'end',
+};
 
 /**
  * Time to sleep between reconnection attempts.
@@ -63,49 +61,35 @@ const RECONNECTION_SLEEP_TIME = 5000;
 /**
  * This class connects to the Touchégg daemon to receive touch events.
  * See: https://github.com/JoseExposito/touchegg.
- *
- * It mimics the behaviour of gnome-shell/js/ui/TouchpadSwipeGesture.
  */
 const ToucheggClient = GObject.registerClass({
-  Properties: {
-    enabled: GObject.ParamSpec.boolean(
-      'enabled', 'enabled', 'enabled',
-      GObject.ParamFlags.READWRITE,
-      true,
-    ),
-    orientation: GObject.ParamSpec.enum(
-      'orientation', 'orientation', 'orientation',
-      GObject.ParamFlags.READWRITE,
-      Clutter.Orientation, Clutter.Orientation.VERTICAL,
-    ),
-  },
   Signals: {
     begin: {
       param_types: [
         GObject.TYPE_UINT, // GestureType
-        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_DOUBLE, // Percentage
+        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // DeviceType
         GObject.TYPE_UINT, // Time
-        GObject.TYPE_DOUBLE, // Mouse X
-        GObject.TYPE_DOUBLE, // Mouse Y
       ],
     },
     update: {
       param_types: [
         GObject.TYPE_UINT, // GestureType
-        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_DOUBLE, // Percentage
+        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // DeviceType
         GObject.TYPE_UINT, // Time
-        GObject.TYPE_DOUBLE, // Delta
       ],
     },
     end: {
       param_types: [
         GObject.TYPE_UINT, // GestureType
-        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // GestureDirection
+        GObject.TYPE_DOUBLE, // Percentage
+        GObject.TYPE_INT, // Fingers
         GObject.TYPE_UINT, // DeviceType
         GObject.TYPE_UINT, // Time
       ],
@@ -121,10 +105,6 @@ const ToucheggClient = GObject.registerClass({
     // middle of a gesture we can finish it
     this.lastSignalReceived = null;
     this.lastParamsReceived = null;
-
-    this.touchpadSettings = new Gio.Settings({
-      schema_id: 'org.gnome.desktop.peripherals.touchpad',
-    });
   }
 
   async stablishConnection() {
@@ -228,52 +208,24 @@ const ToucheggClient = GObject.registerClass({
   }
 
   emitGestureEvent(signalName, parameters) {
-    const type = parameters.get_child_value(0).get_uint32();
-    const direction = parameters.get_child_value(1).get_uint32();
-    const percentage = parameters.get_child_value(2).get_double();
-    const fingers = parameters.get_child_value(3).get_int32();
-    const performedOnDeviceType = parameters.get_child_value(4).get_uint32();
-    const time = Date.now();
+    const signal = DBusSignalToClientSignal[signalName];
+    if (signal) {
+      const type = parameters.get_child_value(0).get_uint32();
+      const direction = parameters.get_child_value(1).get_uint32();
+      const percentage = parameters.get_child_value(2).get_double();
+      const fingers = parameters.get_child_value(3).get_int32();
+      const device = parameters.get_child_value(4).get_uint32();
+      const time = Date.now();
 
-    // logger.log(signalName);
-    // logger.log(type);
-    // logger.log(direction);
-    // logger.log(percentage);
-    // logger.log(fingers);
-    // logger.log(performedOnDeviceType);
+      // logger.log(signalName);
+      // logger.log(type);
+      // logger.log(direction);
+      // logger.log(percentage);
+      // logger.log(fingers);
+      // logger.log(device);
 
-    switch (signalName) {
-      case DBUS_ON_GESTURE_BEGIN: {
-        this.previosPercentage = 0;
-        const { x, y } = ToucheggClient.getMousePosition();
-        this.emit('begin', type, fingers, direction, performedOnDeviceType, time, x, y);
-        break;
-      }
-      case DBUS_ON_GESTURE_UPDATE: {
-        const percentageDelta = (direction === GestureDirection.RIGHT
-          || direction === GestureDirection.DOWN)
-          ? (percentage - this.previosPercentage)
-          : (this.previosPercentage - percentage);
-        const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
-        const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
-        this.previosPercentage = percentage;
-        this.emit('update', type, fingers, direction, performedOnDeviceType, time, delta);
-        break;
-      }
-      case DBUS_ON_GESTURE_END:
-        this.emit('end', type, fingers, direction, performedOnDeviceType, time);
-        break;
-      default:
-        break;
+      this.emit(signal, type, direction, percentage, fingers, device, time);
     }
-  }
-
-  static getMousePosition() {
-    const display = Gdk.Display.get_default();
-    const seat = display.get_default_seat();
-    const pointer = seat.get_pointer();
-    const [, x, y] = pointer.get_position();
-    return { x, y };
   }
 });
 

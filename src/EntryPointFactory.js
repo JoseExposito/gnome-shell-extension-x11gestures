@@ -20,7 +20,7 @@ const { GObject } = imports.gi;
 const ShellVersion = imports.misc.config.PACKAGE_VERSION;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { EntryPoint338 } = SRC.v338.EntryPoint338;
+const { EntryPoint336 } = SRC.v336.EntryPoint336;
 const { EntryPoint40 } = SRC.v40.EntryPoint40;
 const { logger } = SRC.utils.Logger;
 
@@ -31,8 +31,8 @@ class EntryPointFactoryClass extends GObject.Object {
   static buildEntryPoint() {
     logger.log(`Building entry point for GNOME Shell ${ShellVersion}`);
 
-    if (ShellVersion.startsWith('3.38')) {
-      return EntryPoint338;
+    if (ShellVersion.startsWith('3.36') || ShellVersion.startsWith('3.38')) {
+      return EntryPoint336;
     }
 
     if (ShellVersion.startsWith('40')) {

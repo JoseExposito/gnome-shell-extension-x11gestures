@@ -35,7 +35,7 @@ const PERCENTAGE_MULTIPLIER = 0.01;
  * SwipeTracker clone that receives multi-touch events from ToucheggClient.
  * Https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/3.38.3/js/ui/swipeTracker.js.
  */
-class SwipeTracker338Class extends SwipeTracker {
+class SwipeTracker336Class extends SwipeTracker {
   /**
    * Default constructor.
    *
@@ -46,7 +46,7 @@ class SwipeTracker338Class extends SwipeTracker {
    */
   _init(actor, allowedModes, params, toucheggSettings) {
     super._init(actor, allowedModes, params);
-    logger.log('Creating a new SwipeTracker338');
+    logger.log('Creating a new SwipeTracker336');
 
     this.toucheggSettings = toucheggSettings;
     this.touchpadSettings = new Gio.Settings({
@@ -68,7 +68,7 @@ class SwipeTracker338Class extends SwipeTracker {
     this.previosPercentage = 0;
 
     if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
-      const { x, y } = SwipeTracker338Class.getMousePosition();
+      const { x, y } = SwipeTracker336Class.getMousePosition();
       this._beginGesture(gesture, time, x, y);
     }
   }
@@ -102,5 +102,5 @@ class SwipeTracker338Class extends SwipeTracker {
   }
 }
 
-var SwipeTracker338 = // eslint-disable-line
-  GObject.registerClass(SwipeTracker338Class);
+var SwipeTracker336 = // eslint-disable-line
+  GObject.registerClass(SwipeTracker336Class);

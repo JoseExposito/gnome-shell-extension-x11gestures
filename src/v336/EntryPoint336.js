@@ -21,24 +21,24 @@ const { wm, overview } = imports.ui.main;
 const Main = imports.ui.main;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { SwipeTracker338 } = SRC.v338.SwipeTracker338;
+const { SwipeTracker336 } = SRC.v336.SwipeTracker336;
 const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
 const { ToucheggSettings } = SRC.touchegg.ToucheggSettings;
 const { logger } = SRC.utils.Logger;
 
 /**
- * Entry point for GNOME Shell 3.38.
+ * Entry point for GNOME Shell 3.36 and 3.38.
  */
-class EntryPoint338Class extends GObject.Object {
+class EntryPoint336Class extends GObject.Object {
   static start() {
-    EntryPoint338Class.hookGlobalSwitchDesktop();
-    EntryPoint338Class.hookActivitiesSwitchDesktop();
+    EntryPoint336Class.hookGlobalSwitchDesktop();
+    EntryPoint336Class.hookActivitiesSwitchDesktop();
   }
 
   static hookGlobalSwitchDesktop() {
     logger.log('Hooking global switch desktop gestures');
 
-    const tracker = new SwipeTracker338(
+    const tracker = new SwipeTracker336(
       global.stage,
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
@@ -61,7 +61,7 @@ class EntryPoint338Class extends GObject.Object {
   static hookActivitiesSwitchDesktop() {
     logger.log('Hooking activities view switch desktop gestures');
 
-    const tracker = new SwipeTracker338(
+    const tracker = new SwipeTracker336(
       Main.layoutManager.overviewGroup,
       Shell.ActionMode.OVERVIEW,
       undefined,
@@ -83,5 +83,5 @@ class EntryPoint338Class extends GObject.Object {
   }
 }
 
-var EntryPoint338 = // eslint-disable-line
-  GObject.registerClass(EntryPoint338Class);
+var EntryPoint336 = // eslint-disable-line
+  GObject.registerClass(EntryPoint336Class);

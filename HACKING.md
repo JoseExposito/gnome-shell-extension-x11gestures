@@ -26,3 +26,13 @@ This extensions modifies the `SwipeTracker` class, so it is recommended to famil
 the Shell code in the different stable versions:
 
 https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/swipeTracker.js
+
+# Creating a release
+
+- Increment the version number in `metadata.json`
+- Create a tag matching the new version. Notice that the version is only a number, it doesn't follow semantic versioning:
+```bash
+$ git tag X && git push && git push --tags
+```
+- Wait until the draft release gets created, add a description and publish it
+- Download the generated zip file and publish it on [GNOME Extensions](https://extensions.gnome.org/upload/)

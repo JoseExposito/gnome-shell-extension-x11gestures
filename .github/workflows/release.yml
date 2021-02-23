@@ -1,0 +1,65 @@
+# Workflow to create a release when a new tag is created
+# It will generate the release on GitHub and attach the zip archive
+
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+
+  build-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: |
+          apt update
+          apt install -y zip
+
+      - name: Build archive
+        run: |
+          zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js metadata.json src
+
+      - name: Upload archive artifact
+        uses: "actions/upload-artifact@v2"
+        with:
+          name: "x11gestures@joseexposito.github.io.zip"
+          path: "${{ github.workspace }}/x11gestures@joseexposito.github.io.zip"
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [ build-archive ]
+    steps:
+      - name: GitHub Environment Variables Action
+        uses: FranzDiebold/github-env-vars-action@v1.2.1
+
+      - name: Download packages
+        uses: "actions/download-artifact@v2"
+        with:
+          path: ./
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.GITHUB_REF_NAME }}
+          release_name: ${{ env.GITHUB_REF_NAME }}
+          draft: true
+          prerelease: false
+
+      - name: Upload archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: "x11gestures@joseexposito.github.io.zip/x11gestures@joseexposito.github.io.zip"
+          asset_name: "x11gestures@joseexposito.github.io.zip"
+          asset_content_type: application/zip

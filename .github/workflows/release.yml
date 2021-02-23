@@ -16,11 +16,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Dependencies
-        run: |
-          apt update
-          apt install -y zip
-
       - name: Build archive
         run: |
           zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js metadata.json src

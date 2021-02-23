@@ -5,7 +5,7 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
- * Foundation,  either version 3 of the License,  or (at your option)  any later
+ * Foundation,  either version 2 of the License,  or (at your option)  any later
  * version.
  *
  * This program is distributed in the hope that it will be useful,  but  WITHOUT
@@ -23,7 +23,7 @@ const { SwipeTracker } = imports.ui.swipeTracker;
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { toucheggClient } = SRC.touchegg.ToucheggClient;
 const { GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
-const { ToucheggSettings } = SRC.touchegg.ToucheggSettings;
+const { AllowedGesture } = SRC.utils.AllowedGesture;
 const { logger } = SRC.utils.Logger;
 
 const TOUCHPAD_BASE_HEIGHT = 300;
@@ -44,13 +44,13 @@ class SwipeTracker40Class extends SwipeTracker {
    * @param {object} actor @see SwipeTracker.
    * @param {number} allowedModes @see SwipeTracker.
    * @param {object} params @see SwipeTracker.
-   * @param {ToucheggSettings} toucheggSettings @see ToucheggSettings.
+   * @param {AllowedGesture} allowedGesture @see AllowedGesture.
    */
-  _init(actor, allowedModes, params, toucheggSettings) {
+  _init(actor, allowedModes, params, allowedGesture) {
     super._init(actor, allowedModes, params);
     logger.log('Creating a new SwipeTracker40');
 
-    this.toucheggSettings = toucheggSettings;
+    this.allowedGesture = allowedGesture;
     this.touchpadSettings = new Gio.Settings({
       schema_id: 'org.gnome.desktop.peripherals.touchpad',
     });
@@ -69,14 +69,14 @@ class SwipeTracker40Class extends SwipeTracker {
   onToucheggGestureBegin(gesture, type, direction, percentage, fingers, device, time) {
     this.previosPercentage = 0;
 
-    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
+    if (this.allowedGesture.isAllowed(type, fingers, direction, device)) {
       const { x, y } = SwipeTracker40Class.getMousePosition();
       this._beginGesture(this, time, x, y);
     }
   }
 
   onToucheggGestureUpdate(gesture, type, direction, percentage, fingers, device, time) {
-    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
+    if (this.allowedGesture.isAllowed(type, fingers, direction, device)) {
       const percentageDelta = (direction === GestureDirection.RIGHT
         || direction === GestureDirection.DOWN)
         ? (percentage - this.previosPercentage)
@@ -94,7 +94,7 @@ class SwipeTracker40Class extends SwipeTracker {
   }
 
   onToucheggGestureEnd(gesture, type, direction, percentage, fingers, device, time) {
-    if (this.toucheggSettings.gestureMatchesSettings(type, fingers, direction, device)) {
+    if (this.allowedGesture.isAllowed(type, fingers, direction, device)) {
       const distance = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)
         ? TOUCHPAD_BASE_WIDTH
         : TOUCHPAD_BASE_HEIGHT;

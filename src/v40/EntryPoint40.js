@@ -5,7 +5,7 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
- * Foundation,  either version 3 of the License,  or (at your option)  any later
+ * Foundation,  either version 2 of the License,  or (at your option)  any later
  * version.
  *
  * This program is distributed in the hope that it will be useful,  but  WITHOUT
@@ -23,7 +23,8 @@ const Main = imports.ui.main;
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { SwipeTracker40 } = SRC.v40.SwipeTracker40;
 const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
-const { ToucheggSettings } = SRC.touchegg.ToucheggSettings;
+const { ToucheggConfig } = SRC.touchegg.ToucheggConfig;
+const { AllowedGesture } = SRC.utils.AllowedGesture;
 const { logger } = SRC.utils.Logger;
 
 /**
@@ -31,24 +32,30 @@ const { logger } = SRC.utils.Logger;
  */
 class EntryPoint40Class extends GObject.Object {
   static start() {
-    EntryPoint40Class.hookGlobalSwitchDesktop();
-    EntryPoint40Class.hookGlobalOverview();
-    EntryPoint40Class.hookActivitiesSwitchDesktop();
+    const allowedGestures = [
+      EntryPoint40Class.hookGlobalSwitchDesktop(),
+      EntryPoint40Class.hookGlobalOverview(),
+      EntryPoint40Class.hookActivitiesSwitchDesktop(),
+    ];
+
+    ToucheggConfig.update(allowedGestures);
   }
 
   static hookGlobalSwitchDesktop() {
     logger.log('Hooking global switch desktop gestures');
 
+    const allowedGesture = new AllowedGesture(
+      GestureType.SWIPE,
+      4,
+      [GestureDirection.LEFT, GestureDirection.RIGHT],
+      [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+    );
+
     const tracker = new SwipeTracker40(
       global.stage,
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
-      new ToucheggSettings(
-        [GestureType.SWIPE],
-        [4],
-        [GestureDirection.LEFT, GestureDirection.RIGHT],
-        [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
-      ),
+      allowedGesture,
     );
     tracker.orientation = Clutter.Orientation.HORIZONTAL;
 
@@ -59,21 +66,25 @@ class EntryPoint40Class extends GObject.Object {
     tracker.connect('end', workspaceAnimation._switchWorkspaceEnd.bind(workspaceAnimation));
     workspaceAnimation._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle */
+
+    return allowedGesture;
   }
 
   static hookGlobalOverview() {
     logger.log('Hooking global activities/overview gestures');
 
+    const allowedGesture = new AllowedGesture(
+      GestureType.SWIPE,
+      4,
+      [GestureDirection.UP, GestureDirection.DOWN],
+      [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+    );
+
     const tracker = new SwipeTracker40(
       global.stage,
       Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW, // eslint-disable-line no-bitwise
       { allowDrag: false, allowScroll: false },
-      new ToucheggSettings(
-        [GestureType.SWIPE],
-        [4],
-        [GestureDirection.UP, GestureDirection.DOWN],
-        [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
-      ),
+      allowedGesture,
     );
     tracker.orientation = Clutter.Orientation.VERTICAL;
 
@@ -83,21 +94,25 @@ class EntryPoint40Class extends GObject.Object {
     tracker.connect('end', overview._gestureEnd.bind(overview));
     overview._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle */
+
+    return allowedGesture;
   }
 
   static hookActivitiesSwitchDesktop() {
     logger.log('Hooking activities view switch desktop gestures');
 
+    const allowedGesture = new AllowedGesture(
+      GestureType.SWIPE,
+      4,
+      [GestureDirection.LEFT, GestureDirection.RIGHT],
+      [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+    );
+
     const tracker = new SwipeTracker40(
       Main.layoutManager.overviewGroup,
       Shell.ActionMode.OVERVIEW,
       { allowDrag: false, allowScroll: false },
-      new ToucheggSettings(
-        [GestureType.SWIPE],
-        [4],
-        [GestureDirection.LEFT, GestureDirection.RIGHT],
-        [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
-      ),
+      allowedGesture,
     );
     tracker.orientation = Clutter.Orientation.HORIZONTAL;
     tracker.allowLongSwipes = true;
@@ -109,6 +124,8 @@ class EntryPoint40Class extends GObject.Object {
     tracker.connect('end', workspacesDisplay._switchWorkspaceEnd.bind(workspacesDisplay));
     workspacesDisplay._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle */
+
+    return allowedGesture;
   }
 }
 

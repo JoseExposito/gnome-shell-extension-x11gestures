@@ -5,7 +5,7 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
- * Foundation,  either version 3 of the License,  or (at your option)  any later
+ * Foundation,  either version 2 of the License,  or (at your option)  any later
  * version.
  *
  * This program is distributed in the hope that it will be useful,  but  WITHOUT
@@ -23,7 +23,8 @@ const Main = imports.ui.main;
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { SwipeTracker336 } = SRC.v336.SwipeTracker336;
 const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
-const { ToucheggSettings } = SRC.touchegg.ToucheggSettings;
+const { ToucheggConfig } = SRC.touchegg.ToucheggConfig;
+const { AllowedGesture } = SRC.utils.AllowedGesture;
 const { logger } = SRC.utils.Logger;
 
 /**
@@ -31,23 +32,29 @@ const { logger } = SRC.utils.Logger;
  */
 class EntryPoint336Class extends GObject.Object {
   static start() {
-    EntryPoint336Class.hookGlobalSwitchDesktop();
-    EntryPoint336Class.hookActivitiesSwitchDesktop();
+    const allowedGestures = [
+      EntryPoint336Class.hookGlobalSwitchDesktop(),
+      EntryPoint336Class.hookActivitiesSwitchDesktop(),
+    ];
+
+    ToucheggConfig.update(allowedGestures);
   }
 
   static hookGlobalSwitchDesktop() {
     logger.log('Hooking global switch desktop gestures');
 
+    const allowedGesture = new AllowedGesture(
+      GestureType.SWIPE,
+      4,
+      [GestureDirection.UP, GestureDirection.DOWN],
+      [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+    );
+
     const tracker = new SwipeTracker336(
       global.stage,
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
-      new ToucheggSettings(
-        [GestureType.SWIPE],
-        [4],
-        [GestureDirection.UP, GestureDirection.DOWN],
-        [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
-      ),
+      allowedGesture,
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -56,21 +63,25 @@ class EntryPoint336Class extends GObject.Object {
     tracker.connect('end', wm._switchWorkspaceEnd.bind(wm));
     wm._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle */
+
+    return allowedGesture;
   }
 
   static hookActivitiesSwitchDesktop() {
     logger.log('Hooking activities view switch desktop gestures');
 
+    const allowedGesture = new AllowedGesture(
+      GestureType.SWIPE,
+      4,
+      [GestureDirection.UP, GestureDirection.DOWN],
+      [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
+    );
+
     const tracker = new SwipeTracker336(
       Main.layoutManager.overviewGroup,
       Shell.ActionMode.OVERVIEW,
       undefined,
-      new ToucheggSettings(
-        [GestureType.SWIPE],
-        [4],
-        [GestureDirection.UP, GestureDirection.DOWN],
-        [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
-      ),
+      allowedGesture,
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -80,6 +91,8 @@ class EntryPoint336Class extends GObject.Object {
     tracker.connect('end', workspacesDisplay._switchWorkspaceEnd.bind(workspacesDisplay));
     workspacesDisplay._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle */
+
+    return allowedGesture;
   }
 }
 

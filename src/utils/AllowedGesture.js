@@ -5,7 +5,7 @@
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
- * Foundation,  either version 3 of the License,  or (at your option)  any later
+ * Foundation,  either version 2 of the License,  or (at your option)  any later
  * version.
  *
  * This program is distributed in the hope that it will be useful,  but  WITHOUT
@@ -25,28 +25,28 @@ const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes
  * Utility class used to pass extra settings to our custom SwipeTracker and know if a certain
  * gesture must be executed or not.
  */
-class ToucheggSettingsClass extends GObject.Object {
+class AllowedGestureClass extends GObject.Object {
   /**
    * Default constructor.
    *
-   * @param {GestureType[]} types Array of allowed GestureType.
-   * @param {number[]} fingers Array of allowed number of fingers.
+   * @param {GestureType} type Array of allowed GestureType.
+   * @param {number} fingers Array of allowed number of fingers.
    * @param {GestureDirection[]} directions Array of allowed GestureDirection.
    * @param {DeviceType[]} devices Array of allowed device types.
    */
-  _init(types, fingers, directions, devices) {
-    this.types = types;
+  _init(type, fingers, directions, devices) {
+    this.type = type;
     this.fingers = fingers;
     this.directions = directions;
     this.devices = devices;
   }
 
-  gestureMatchesSettings(type, fingers, direction, device) {
-    if (!this.types.includes(type)) {
+  isAllowed(type, fingers, direction, device) {
+    if (this.type !== type) {
       return false;
     }
 
-    if (!this.fingers.includes(fingers)) {
+    if (this.fingers !== fingers) {
       return false;
     }
 
@@ -63,5 +63,5 @@ class ToucheggSettingsClass extends GObject.Object {
   }
 }
 
-var ToucheggSettings = // eslint-disable-line
-  GObject.registerClass(ToucheggSettingsClass);
+var AllowedGesture = // eslint-disable-line
+  GObject.registerClass(AllowedGestureClass);

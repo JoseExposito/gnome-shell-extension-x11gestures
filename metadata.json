@@ -1,9 +1,11 @@
 {
   "name": "X11 Gestures",
-  "description": "Enable muti-touch gestures on X11, requires Touchégg",
+  "description": "Enable GNOME Shell multi-touch gestures on X11.\nRequires Touchégg https://github.com/JoseExposito/touchegg#readme",
   "uuid": "x11gestures@joseexposito.github.io",
   "version": 1,
+  "url": "https://github.com/JoseExposito/gnome-shell-extension-x11gestures",
   "shell-version": [
+    "3.36",
     "3.38",
     "40.beta"
   ]

@@ -1,11 +1,12 @@
 {
   "name": "io.github.joseexposito.x11gestures",
   "version": "1.0.0",
-  "description": "",
+  "description": "Enable GNOME Shell multi-touch gestures on X11 with this extension",
   "author": "José Expósito",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-2.0-or-later",
   "main": "extension.js",
   "scripts": {
+    "lint": "eslint --ext .js,.mjs src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

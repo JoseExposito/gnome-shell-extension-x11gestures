@@ -44,7 +44,7 @@
     "jsdoc/require-description-complete-sentence": "error",
     "header/header": [
       "error",
-      "data/license-header.js"
+      ".eslint/license-header.js"
     ]
   },
   "globals": {

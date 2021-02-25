@@ -7,7 +7,7 @@ Enable GNOME Shell multi-touch gestures on X11 with this extension.
 
 [Touchégg](https://github.com/JoseExposito/touchegg) must be installed separately.
 
-<!-- TODO Add demo -->
+![Demo](.github/images/demo.gif)
 
 <!-- Enable when it is ready
 <div align="center">

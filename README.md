@@ -19,3 +19,35 @@ Enable GNOME Shell multi-touch gestures on X11 with this extension.
   </a>
 </div>
 -->
+
+## Installation
+
+#### Step 1
+
+Install [Touchégg](https://github.com/JoseExposito/touchegg#readme).
+
+#### Step 2
+
+Download the latest release of
+[x11gestures@joseexposito.github.io.zip](https://github.com/JoseExposito/gnome-shell-extension-x11gestures/releases)
+
+#### Step 3
+
+Create the directory `~/.local/share/gnome-shell/extensions` if it doesn't exists and unzip the
+extension in `~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io`.
+
+If you prefer to use the command line:
+
+```bash
+$ mkdir -p ~/.local/share/gnome-shell/extensions
+$ unzip -q ~/Downloads/x11gestures@joseexposito.github.io.zip -d ~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io
+```
+
+#### Step 4
+
+Enable the extension: Press `Alt+F2` and type `restart`.
+
+<br/>
+<div align="center">
+  Coming soon to GNOME Extensions...
+</div>

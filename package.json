@@ -6,7 +6,7 @@
   "license": "GPL-2.0-or-later",
   "main": "extension.js",
   "scripts": {
-    "lint": "eslint --ext .js,.mjs src",
+    "lint": "eslint --ext .js,.mjs extension.js src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

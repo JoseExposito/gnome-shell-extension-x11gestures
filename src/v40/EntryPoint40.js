@@ -46,18 +46,18 @@ class EntryPoint40Class extends GObject.Object {
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      4,
+      3,
       [GestureDirection.LEFT, GestureDirection.RIGHT],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
     const tracker = new SwipeTracker40(
       global.stage,
+      Clutter.Orientation.HORIZONTAL,
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
     );
-    tracker.orientation = Clutter.Orientation.HORIZONTAL;
 
     /* eslint-disable no-underscore-dangle */
     const workspaceAnimation = wm._workspaceAnimation;
@@ -75,18 +75,18 @@ class EntryPoint40Class extends GObject.Object {
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      4,
+      3,
       [GestureDirection.UP, GestureDirection.DOWN],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
     const tracker = new SwipeTracker40(
       global.stage,
+      Clutter.Orientation.VERTICAL,
       Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW, // eslint-disable-line no-bitwise
       { allowDrag: false, allowScroll: false },
       allowedGesture,
     );
-    tracker.orientation = Clutter.Orientation.VERTICAL;
 
     /* eslint-disable no-underscore-dangle */
     tracker.connect('begin', overview._gestureBegin.bind(overview));
@@ -103,18 +103,18 @@ class EntryPoint40Class extends GObject.Object {
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      4,
+      3,
       [GestureDirection.LEFT, GestureDirection.RIGHT],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
     const tracker = new SwipeTracker40(
       Main.layoutManager.overviewGroup,
+      Clutter.Orientation.HORIZONTAL,
       Shell.ActionMode.OVERVIEW,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
     );
-    tracker.orientation = Clutter.Orientation.HORIZONTAL;
     tracker.allowLongSwipes = true;
 
     /* eslint-disable no-underscore-dangle */

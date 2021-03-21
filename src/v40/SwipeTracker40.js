@@ -42,12 +42,13 @@ class SwipeTracker40Class extends SwipeTracker {
    * Default constructor.
    *
    * @param {object} actor @see SwipeTracker.
+   * @param {number} orientation @see SwipeTracker.
    * @param {number} allowedModes @see SwipeTracker.
    * @param {object} params @see SwipeTracker.
    * @param {AllowedGesture} allowedGesture @see AllowedGesture.
    */
-  _init(actor, allowedModes, params, allowedGesture) {
-    super._init(actor, allowedModes, params);
+  _init(actor, orientation, allowedModes, params, allowedGesture) {
+    super._init(actor, orientation, allowedModes, params);
     logger.log('Creating a new SwipeTracker40');
 
     this.allowedGesture = allowedGesture;

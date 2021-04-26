@@ -36,9 +36,9 @@ const Convenience = Me.imports.convenience;
  */
 class EntryPoint40Class extends GObject.Object {
   static start() {
-    let settings = Convenience.getSettings('org.gnome.shell.extensions.x11gestures');
-    let fingers = settings.get_int('swipe-fingers');
-    let cfg = {fingers};
+    const settings = Convenience.getSettings('org.gnome.shell.extensions.x11gestures');
+    const fingers = settings.get_int('swipe-fingers');
+    const cfg = { fingers };
 
     const allowedGestures = [
       EntryPoint40Class.hookGlobalSwitchDesktop(cfg),
@@ -49,7 +49,7 @@ class EntryPoint40Class extends GObject.Object {
     ToucheggConfig.update(allowedGestures);
   }
 
-  static hookGlobalSwitchDesktop({fingers}) {
+  static hookGlobalSwitchDesktop({ fingers }) {
     logger.log('Hooking global switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -78,7 +78,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookGlobalOverview({fingers}) {
+  static hookGlobalOverview({ fingers }) {
     logger.log('Hooking global activities/overview gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -106,7 +106,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookActivitiesSwitchDesktop({fingers}) {
+  static hookActivitiesSwitchDesktop({ fingers }) {
     logger.log('Hooking activities view switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(

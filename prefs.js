@@ -21,6 +21,7 @@ const { Gio, Gtk } = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
+// eslint-disable-next-line no-unused-vars
 function init() {}
 
 function buildPrefsWidget() {

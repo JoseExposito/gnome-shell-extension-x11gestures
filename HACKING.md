@@ -20,7 +20,7 @@ $ journalctl -f -o cat /usr/bin/gnome-shell
 
 This guide is a good resource to get started with GNOME Shell extensions:
 
-https://wiki.gnome.org/Projects/GnomeShell/Extensions/Writing
+https://gjs.guide/extensions/
 
 This extensions modifies the `SwipeTracker` class, so it is recommended to familiarize yourself with
 the Shell code in the different stable versions:

@@ -24,6 +24,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 // eslint-disable-next-line no-unused-vars
 function init() {}
 
+// eslint-disable-next-line no-unused-vars
 function buildPrefsWidget() {
   this.settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.x11gestures');
 

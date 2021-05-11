@@ -56,3 +56,6 @@ node_modules/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# schemas
+schemas/gschemas.compiled

@@ -16,9 +16,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install libglib2.0-bin
+        run: |
+          sudo /bin/sh -c "apt-get update && apt-get install libglib2.0-bin -y"
+
+      - name: Compile schemas
+        run: |
+          glib-compile-schemas schemas
+
       - name: Build archive
         run: |
-          zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js metadata.json src
+          zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js metadata.json src schemas
 
       - name: Upload archive artifact
         uses: "actions/upload-artifact@v2"

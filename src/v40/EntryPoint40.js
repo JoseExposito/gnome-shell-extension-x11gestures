@@ -27,26 +27,34 @@ const { ToucheggConfig } = SRC.touchegg.ToucheggConfig;
 const { AllowedGesture } = SRC.utils.AllowedGesture;
 const { logger } = SRC.utils.Logger;
 
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+
 /**
  * Entry point for GNOME Shell 40.
  */
 class EntryPoint40Class extends GObject.Object {
   static start() {
+    const settings = Convenience.getSettings('org.gnome.shell.extensions.x11gestures');
+    const fingers = settings.get_int('swipe-fingers');
+    const cfg = { fingers };
+
     const allowedGestures = [
-      EntryPoint40Class.hookGlobalSwitchDesktop(),
-      EntryPoint40Class.hookGlobalOverview(),
-      EntryPoint40Class.hookActivitiesSwitchDesktop(),
+      EntryPoint40Class.hookGlobalSwitchDesktop(cfg),
+      EntryPoint40Class.hookGlobalOverview(cfg),
+      EntryPoint40Class.hookActivitiesSwitchDesktop(cfg),
     ];
 
     ToucheggConfig.update(allowedGestures);
   }
 
-  static hookGlobalSwitchDesktop() {
+  static hookGlobalSwitchDesktop({ fingers }) {
     logger.log('Hooking global switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      3,
+      fingers,
       [GestureDirection.LEFT, GestureDirection.RIGHT],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
@@ -70,12 +78,12 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookGlobalOverview() {
+  static hookGlobalOverview({ fingers }) {
     logger.log('Hooking global activities/overview gestures');
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      3,
+      fingers,
       [GestureDirection.UP, GestureDirection.DOWN],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
@@ -98,12 +106,12 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookActivitiesSwitchDesktop() {
+  static hookActivitiesSwitchDesktop({ fingers }) {
     logger.log('Hooking activities view switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
       GestureType.SWIPE,
-      3,
+      fingers,
       [GestureDirection.LEFT, GestureDirection.RIGHT],
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );

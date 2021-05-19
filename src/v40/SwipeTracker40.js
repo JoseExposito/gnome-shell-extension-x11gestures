@@ -19,7 +19,6 @@
 /* eslint-disable no-underscore-dangle */
 const { GObject, Gdk, Gio } = imports.gi;
 const { SwipeTracker } = imports.ui.swipeTracker;
-const ShellVersion = imports.misc.config.PACKAGE_VERSION;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { toucheggClient } = SRC.touchegg.ToucheggClient;
@@ -33,8 +32,7 @@ const TOUCHPAD_BASE_WIDTH = 400;
 /**
  * Touchégg percentage multiplier to get a good UX on GNOME Shell.
  */
-const PERCENTAGE_MULTIPLIER_40_0 = 3.5;
-const PERCENTAGE_MULTIPLIER_40_1 = 15;
+const PERCENTAGE_MULTIPLIER = 3.5;
 
 /**
  * SwipeTracker clone that receives multi-touch events from ToucheggClient.
@@ -52,13 +50,6 @@ class SwipeTracker40Class extends SwipeTracker {
   _init(actor, orientation, allowedModes, params, allowedGesture) {
     super._init(actor, orientation, allowedModes, params);
     logger.log('Creating a new SwipeTracker40');
-
-    // Set the right multiplier depending on the Shell version
-    if (ShellVersion.startsWith('40.0')) {
-      this.percentageMultiplier = PERCENTAGE_MULTIPLIER_40_0;
-    } else {
-      this.percentageMultiplier = PERCENTAGE_MULTIPLIER_40_1;
-    }
 
     this.allowedGesture = allowedGesture;
     this.touchpadSettings = new Gio.Settings({
@@ -92,7 +83,7 @@ class SwipeTracker40Class extends SwipeTracker {
         ? (percentage - this.previosPercentage)
         : (this.previosPercentage - percentage);
       const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
-      const delta = percentageDelta * naturalScroll * this.percentageMultiplier;
+      const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
       this.previosPercentage = percentage;
 
       const distance = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)

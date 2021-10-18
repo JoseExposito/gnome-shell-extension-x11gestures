@@ -144,7 +144,12 @@ class ToucheggConfigClass extends GObject.Object {
    * @returns {string} User's home directory path (~/.config/touchegg).
    */
   static getUserConfigDirPath() {
-    return GLib.build_filenamev([GLib.get_home_dir(), '.config', 'touchegg']);
+    // If $XDG_CONFIG_HOME is set, use it. Otherwise fallback to $HOME/.config:
+    // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+    const xdgConfigHomeEnvVar = GLib.getenv('XDG_CONFIG_HOME');
+    const configPath = xdgConfigHomeEnvVar
+        || GLib.build_filenamev([GLib.get_home_dir(), '.config']);
+    return GLib.build_filenamev([configPath, 'touchegg']);
   }
 
   /**
@@ -158,7 +163,24 @@ class ToucheggConfigClass extends GObject.Object {
    * @returns {string} System config file path (/usr/share/touchegg/touchegg.conf).
    */
   static getSystemConfigFilePath() {
-    return GLib.build_filenamev([GLib.DIR_SEPARATOR_S, 'usr', 'share', 'touchegg', 'touchegg.conf']);
+    // If $XDG_CONFIG_DIRS is set, check if the config is present in one of those
+    // directories. Otherwise, fallback to /etc/xdg, as in the spec:
+    // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+    // Finally, fallback to SYSTEM_CONFIG_FILE_PATH for backwards compatibility.
+    let configFilePath = GLib.build_filenamev([GLib.DIR_SEPARATOR_S, 'usr', 'share', 'touchegg', 'touchegg.conf']);
+
+    const xdgConfigDirsEnvVar = GLib.getenv('XDG_CONFIG_DIRS');
+    const xdgPaths = xdgConfigDirsEnvVar ? xdgConfigDirsEnvVar.split(':') : [];
+    xdgPaths.push('/etc/xdg');
+
+    xdgPaths.forEach((path) => {
+      const confPath = GLib.build_filenamev([path, 'touchegg', 'touchegg.conf']);
+      if (this.fileExists(confPath)) {
+        configFilePath = confPath;
+      }
+    });
+
+    return configFilePath;
   }
 
   /**

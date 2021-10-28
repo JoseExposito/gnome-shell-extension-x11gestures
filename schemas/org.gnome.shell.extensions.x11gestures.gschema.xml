@@ -4,6 +4,11 @@
     <key name="swipe-fingers" type="i">
       <default>3</default>
     </key>
+    <key name="invert-horizontal-scroll" type="b">
+      <default>false</default>
+    </key>
+    <key name="invert-vertical-scroll" type="b">
+      <default>false</default>
+    </key>
   </schema>
 </schemalist>
-

@@ -38,7 +38,9 @@ class EntryPoint40Class extends GObject.Object {
   static start() {
     const settings = Convenience.getSettings('org.gnome.shell.extensions.x11gestures');
     const fingers = settings.get_int('swipe-fingers');
-    const cfg = { fingers };
+    const invertHorizontalScroll = settings.get_boolean('invert-horizontal-scroll');
+    const invertVerticalScroll = settings.get_boolean('invert-vertical-scroll');
+    const cfg = { fingers, invertHorizontalScroll, invertVerticalScroll };
 
     const allowedGestures = [
       EntryPoint40Class.hookGlobalSwitchDesktop(cfg),
@@ -49,7 +51,7 @@ class EntryPoint40Class extends GObject.Object {
     ToucheggConfig.update(allowedGestures);
   }
 
-  static hookGlobalSwitchDesktop({ fingers }) {
+  static hookGlobalSwitchDesktop({ fingers, invertHorizontalScroll, invertVerticalScroll }) {
     logger.log('Hooking global switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -65,6 +67,8 @@ class EntryPoint40Class extends GObject.Object {
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertHorizontalScroll, 
+      invertVerticalScroll
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -78,7 +82,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookGlobalOverview({ fingers }) {
+  static hookGlobalOverview({ fingers, invertHorizontalScroll, invertVerticalScroll }) {
     logger.log('Hooking global activities/overview gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -94,6 +98,8 @@ class EntryPoint40Class extends GObject.Object {
       Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW, // eslint-disable-line no-bitwise
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertHorizontalScroll, 
+      invertVerticalScroll
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -106,7 +112,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookActivitiesSwitchDesktop({ fingers }) {
+  static hookActivitiesSwitchDesktop({ fingers, invertHorizontalScroll, invertVerticalScroll }) {
     logger.log('Hooking activities view switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -122,6 +128,8 @@ class EntryPoint40Class extends GObject.Object {
       Shell.ActionMode.OVERVIEW,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertHorizontalScroll, 
+      invertVerticalScroll
     );
     tracker.allowLongSwipes = true;
 

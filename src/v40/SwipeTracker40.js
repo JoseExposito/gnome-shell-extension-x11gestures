@@ -47,11 +47,13 @@ class SwipeTracker40Class extends SwipeTracker {
    * @param {object} params @see SwipeTracker.
    * @param {AllowedGesture} allowedGesture @see AllowedGesture.
    */
-  _init(actor, orientation, allowedModes, params, allowedGesture) {
+  _init(actor, orientation, allowedModes, params, allowedGesture, invertHorizontalScroll, invertVerticalScroll) {
     super._init(actor, orientation, allowedModes, params);
     logger.log('Creating a new SwipeTracker40');
 
     this.allowedGesture = allowedGesture;
+    this.invertHorizontalScroll = invertHorizontalScroll;
+    this.invertVerticalScroll = invertVerticalScroll;
     this.touchpadSettings = new Gio.Settings({
       schema_id: 'org.gnome.desktop.peripherals.touchpad',
     });
@@ -82,7 +84,9 @@ class SwipeTracker40Class extends SwipeTracker {
         || direction === GestureDirection.DOWN)
         ? (percentage - this.previosPercentage)
         : (this.previosPercentage - percentage);
-      const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
+      const naturalScroll = (this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1) * 
+        ((direction === GestureDirection.RIGHT || direction === GestureDirection.LEFT) && this.invertHorizontalScroll ? -1 : 1) *
+        ((direction === GestureDirection.UP || direction === GestureDirection.DOWN) && this.invertVerticalScroll ? -1 : 1);
       const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
       this.previosPercentage = percentage;
 

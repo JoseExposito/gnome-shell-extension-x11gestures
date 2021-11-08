@@ -37,3 +37,6 @@ relevant.
  * Touchégg version:
  * Operating System: Ubuntu, Fedora, Arch Linux...
  * GNOME Shell Version:
+ * Are you using other GNOME Shell extensions?
+    * List the other extensions
+    * Can you reproduce the issue after disabling the other extensions?

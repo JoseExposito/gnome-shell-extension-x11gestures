@@ -40,3 +40,8 @@ relevant.
  * Are you using other GNOME Shell extensions?
     * List the other extensions
     * Can you reproduce the issue after disabling the other extensions?
+
+<!--
+Please, make sure to search for similar bug reports before creating one and to read the FAQ:
+https://github.com/JoseExposito/touchegg#faq
+-->

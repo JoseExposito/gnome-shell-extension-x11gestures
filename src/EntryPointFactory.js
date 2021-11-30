@@ -35,7 +35,7 @@ class EntryPointFactoryClass extends GObject.Object {
       return EntryPoint336;
     }
 
-    if (ShellVersion.startsWith('40') || ShellVersion.startsWith('41')) {
+    if (ShellVersion.startsWith('4')) {
       return EntryPoint40;
     }
 

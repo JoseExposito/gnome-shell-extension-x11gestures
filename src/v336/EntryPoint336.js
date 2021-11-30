@@ -58,10 +58,13 @@ class EntryPoint336Class extends GObject.Object {
     );
 
     /* eslint-disable no-underscore-dangle */
-    tracker.connect('begin', wm._switchWorkspaceBegin.bind(wm));
-    tracker.connect('update', wm._switchWorkspaceUpdate.bind(wm));
-    tracker.connect('end', wm._switchWorkspaceEnd.bind(wm));
-    wm._toucheggTracker = tracker;
+    EntryPoint336Class.hook(
+      wm,
+      wm._switchWorkspaceBegin,
+      wm._switchWorkspaceUpdate,
+      wm._switchWorkspaceEnd,
+      tracker,
+    );
     /* eslint-enable no-underscore-dangle */
 
     return allowedGesture;
@@ -86,13 +89,25 @@ class EntryPoint336Class extends GObject.Object {
 
     /* eslint-disable no-underscore-dangle */
     const workspacesDisplay = overview.viewSelector._workspacesDisplay;
-    tracker.connect('begin', workspacesDisplay._switchWorkspaceBegin.bind(workspacesDisplay));
-    tracker.connect('update', workspacesDisplay._switchWorkspaceUpdate.bind(workspacesDisplay));
-    tracker.connect('end', workspacesDisplay._switchWorkspaceEnd.bind(workspacesDisplay));
-    workspacesDisplay._toucheggTracker = tracker;
+    EntryPoint336Class.hook(
+      workspacesDisplay,
+      workspacesDisplay._switchWorkspaceBegin,
+      workspacesDisplay._switchWorkspaceUpdate,
+      workspacesDisplay._switchWorkspaceEnd,
+      tracker,
+    );
     /* eslint-enable no-underscore-dangle */
 
     return allowedGesture;
+  }
+
+  static hook(obj, begin, update, end, tracker) {
+    /* eslint-disable no-underscore-dangle, no-param-reassign */
+    obj._toucheggBegin = tracker.connect('begin', begin.bind(obj));
+    obj._toucheggUpdate = tracker.connect('update', update.bind(obj));
+    obj._toucheggEnd = tracker.connect('end', end.bind(obj));
+    obj._toucheggTracker = tracker;
+    /* eslint-enable no-underscore-dangle, no-param-reassign */
   }
 }
 

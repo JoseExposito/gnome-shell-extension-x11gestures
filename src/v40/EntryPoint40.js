@@ -69,10 +69,13 @@ class EntryPoint40Class extends GObject.Object {
 
     /* eslint-disable no-underscore-dangle */
     const workspaceAnimation = wm._workspaceAnimation;
-    tracker.connect('begin', workspaceAnimation._switchWorkspaceBegin.bind(workspaceAnimation));
-    tracker.connect('update', workspaceAnimation._switchWorkspaceUpdate.bind(workspaceAnimation));
-    tracker.connect('end', workspaceAnimation._switchWorkspaceEnd.bind(workspaceAnimation));
-    workspaceAnimation._toucheggTracker = tracker;
+    EntryPoint40Class.hook(
+      workspaceAnimation,
+      workspaceAnimation._switchWorkspaceBegin,
+      workspaceAnimation._switchWorkspaceUpdate,
+      workspaceAnimation._switchWorkspaceEnd,
+      tracker,
+    );
     /* eslint-enable no-underscore-dangle */
 
     return allowedGesture;
@@ -97,10 +100,13 @@ class EntryPoint40Class extends GObject.Object {
     );
 
     /* eslint-disable no-underscore-dangle */
-    tracker.connect('begin', overview._gestureBegin.bind(overview));
-    tracker.connect('update', overview._gestureUpdate.bind(overview));
-    tracker.connect('end', overview._gestureEnd.bind(overview));
-    overview._toucheggTracker = tracker;
+    EntryPoint40Class.hook(
+      overview,
+      overview._gestureBegin,
+      overview._gestureUpdate,
+      overview._gestureEnd,
+      tracker,
+    );
     /* eslint-enable no-underscore-dangle */
 
     return allowedGesture;
@@ -127,13 +133,25 @@ class EntryPoint40Class extends GObject.Object {
 
     /* eslint-disable no-underscore-dangle */
     const workspacesDisplay = overview._overview._controls._workspacesDisplay;
-    tracker.connect('begin', workspacesDisplay._switchWorkspaceBegin.bind(workspacesDisplay));
-    tracker.connect('update', workspacesDisplay._switchWorkspaceUpdate.bind(workspacesDisplay));
-    tracker.connect('end', workspacesDisplay._switchWorkspaceEnd.bind(workspacesDisplay));
-    workspacesDisplay._toucheggTracker = tracker;
+    EntryPoint40Class.hook(
+      workspacesDisplay,
+      workspacesDisplay._switchWorkspaceBegin,
+      workspacesDisplay._switchWorkspaceUpdate,
+      workspacesDisplay._switchWorkspaceEnd,
+      tracker,
+    );
     /* eslint-enable no-underscore-dangle */
 
     return allowedGesture;
+  }
+
+  static hook(obj, begin, update, end, tracker) {
+    /* eslint-disable no-underscore-dangle, no-param-reassign */
+    obj._toucheggBegin = tracker.connect('begin', begin.bind(obj));
+    obj._toucheggUpdate = tracker.connect('update', update.bind(obj));
+    obj._toucheggEnd = tracker.connect('end', end.bind(obj));
+    obj._toucheggTracker = tracker;
+    /* eslint-enable no-underscore-dangle, no-param-reassign */
   }
 }
 

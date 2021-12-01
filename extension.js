@@ -55,7 +55,13 @@ class Extension {
 
   static disable() {
     logger.log('Extension disabled');
+
     toucheggClient.closeConnection();
+
+    const entryPoint = EntryPointFactory.buildEntryPoint();
+    if (entryPoint) {
+      entryPoint.stop();
+    }
   }
 }
 

@@ -109,6 +109,24 @@ class EntryPoint336Class extends GObject.Object {
     obj._toucheggTracker = tracker;
     /* eslint-enable no-underscore-dangle, no-param-reassign */
   }
+
+  static stop() {
+    /* eslint-disable no-underscore-dangle */
+    EntryPoint336Class.unhook(wm);
+
+    const workspacesDisplay = overview.viewSelector._workspacesDisplay;
+    EntryPoint336Class.unhook(workspacesDisplay);
+    /* eslint-enable no-underscore-dangle */
+  }
+
+  static unhook(obj) {
+    /* eslint-disable no-underscore-dangle, no-param-reassign */
+    obj._toucheggTracker.disconnect(obj._toucheggBegin);
+    obj._toucheggTracker.disconnect(obj._toucheggUpdate);
+    obj._toucheggTracker.disconnect(obj._toucheggEnd);
+    obj._toucheggTracker = null;
+    /* eslint-enable no-underscore-dangle, no-param-reassign */
+  }
 }
 
 var EntryPoint336 = // eslint-disable-line

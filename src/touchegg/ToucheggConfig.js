@@ -166,7 +166,7 @@ class ToucheggConfigClass extends GObject.Object {
     // If $XDG_CONFIG_DIRS is set, check if the config is present in one of those
     // directories. Otherwise, fallback to /etc/xdg, as in the spec:
     // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-    // Finally, fallback to SYSTEM_CONFIG_FILE_PATH for backwards compatibility.
+    // Finally, fallback to /usr/share/touchegg for backwards compatibility.
     let configFilePath = GLib.build_filenamev([GLib.DIR_SEPARATOR_S, 'usr', 'share', 'touchegg', 'touchegg.conf']);
 
     const xdgConfigDirsEnvVar = GLib.getenv('XDG_CONFIG_DIRS');

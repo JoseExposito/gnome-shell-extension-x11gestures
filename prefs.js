@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 José Expósito <jose.exposito89@gmail.com>
+ * Copyright 2021 - 2022 José Expósito <jose.exposito89@gmail.com>
  *
  * This file is part of gnome-shell-extension-x11gestures.
  *
@@ -22,9 +22,15 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
 // eslint-disable-next-line no-unused-vars
+/**
+ *
+ */
 function init() {}
 
 // eslint-disable-next-line no-unused-vars
+/**
+ *
+ */
 function buildPrefsWidget() {
   this.settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.x11gestures');
 

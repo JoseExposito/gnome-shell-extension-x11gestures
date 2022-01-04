@@ -16,21 +16,16 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+/* eslint-disable jsdoc/require-jsdoc */
 const { Gio, Gtk } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 
 // eslint-disable-next-line no-unused-vars
-/**
- *
- */
 function init() {}
 
 // eslint-disable-next-line no-unused-vars
-/**
- *
- */
 function buildPrefsWidget() {
   this.settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.x11gestures');
 

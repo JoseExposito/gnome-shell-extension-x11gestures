@@ -17,7 +17,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 /* eslint-disable no-underscore-dangle */
-const { GObject, Gdk, Gio } = imports.gi;
+const { GObject, Gio } = imports.gi;
 const { SwipeTracker } = imports.ui.swipeTracker;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;

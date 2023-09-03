@@ -19,7 +19,6 @@
 /* eslint-disable no-underscore-dangle */
 const { GObject, Gdk, Gio } = imports.gi;
 const { SwipeTracker } = imports.ui.swipeTracker;
-const ShellVersion = imports.misc.config.PACKAGE_VERSION;
 
 const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
 const { toucheggClient } = SRC.touchegg.ToucheggClient;
@@ -108,15 +107,6 @@ class SwipeTracker40Class extends SwipeTracker {
   }
 
   static getMousePosition() {
-    if (ShellVersion.startsWith('40') || ShellVersion.startsWith('41')
-        || ShellVersion.startsWith('42') || ShellVersion.startsWith('43')) {
-      const display = Gdk.Display.get_default();
-      const seat = display.get_default_seat();
-      const pointer = seat.get_pointer();
-      const [, x, y] = pointer.get_position();
-      return { x, y };
-    }
-
     const [x, y] = global.get_pointer();
     return { x, y };
   }

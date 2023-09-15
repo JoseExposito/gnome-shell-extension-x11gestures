@@ -17,65 +17,62 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 /* eslint-disable jsdoc/require-jsdoc */
-const { Gio, Gtk } = imports.gi;
+import Adw from 'gi://Adw';
+import Gio from 'gi://Gio';
+import Gtk from 'gi://Gtk';
+import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
+class Preferences extends ExtensionPreferences {
+  fillPreferencesWindow(window) {
+    // eslint-disable-next-line no-underscore-dangle, no-param-reassign
+    window._settings = this.getSettings('org.gnome.shell.extensions.x11gestures');
 
-// eslint-disable-next-line no-unused-vars
-function init() {}
+    const page = new Adw.PreferencesPage();
 
-// eslint-disable-next-line no-unused-vars
-function buildPrefsWidget() {
-  this.settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.x11gestures');
+    const group = new Adw.PreferencesGroup({
+      title: 'X11 Gestures Preferences',
+      description: 'Restart extension to apply changes',
+    });
 
-  // Create a parent widget that we'll return from this function
-  const prefsWidget = new Gtk.Grid({
-    margin_top: 10,
-    margin_bottom: 10,
-    margin_start: 10,
-    margin_end: 10,
-    column_spacing: 12,
-    row_spacing: 12,
-    visible: true,
-  });
+    // Create a parent widget that we'll return from this function
+    const prefsWidget = new Gtk.Grid({
+      column_spacing: 12,
+      row_spacing: 12,
+      visible: true,
+    });
 
-  // Add a simple title and add it to the prefsWidget
-  const title = new Gtk.Label({
-    label: `<b>${Me.metadata.name} Preferences</b>`,
-    halign: Gtk.Align.START,
-    use_markup: true,
-    visible: true,
-  });
-  prefsWidget.attach(title, 0, 0, 2, 1);
+    // Create a label & switch for `show-indicator`
+    const swipeFingerLabel = new Gtk.Label({
+      label: 'Number of fingers for Swipe action',
+      halign: Gtk.Align.START,
+      visible: true,
+    });
+    prefsWidget.attach(swipeFingerLabel, 0, 0, 1, 1);
 
-  // Create a label & switch for `show-indicator`
-  const swipeFingerLabel = new Gtk.Label({
-    label: 'Number of fingers for Swipe action binding (Extension restart needed):',
-    halign: Gtk.Align.START,
-    visible: true,
-  });
-  prefsWidget.attach(swipeFingerLabel, 0, 1, 1, 1);
+    this.swipeFinger = new Gtk.SpinButton({
+      halign: Gtk.Align.END,
+      visible: true,
+      adjustment: new Gtk.Adjustment({
+        lower: 3,
+        upper: 4,
+        step_increment: 1,
+      }),
+    });
+    prefsWidget.attach(this.swipeFinger, 1, 0, 1, 1);
 
-  this.swipeFinger = new Gtk.SpinButton({
-    halign: Gtk.Align.END,
-    visible: true,
-    adjustment: new Gtk.Adjustment({
-      lower: 3,
-      upper: 4,
-      step_increment: 1,
-    }),
-  });
-  prefsWidget.attach(this.swipeFinger, 1, 1, 1, 1);
+    // Bind the switch to the `swipe-fingers` key
+    // eslint-disable-next-line no-underscore-dangle
+    window._settings.bind(
+      'swipe-fingers',
+      this.swipeFinger,
+      'value',
+      Gio.SettingsBindFlags.DEFAULT,
+    );
 
-  // Bind the switch to the `swipe-fingers` key
-  this.settings.bind(
-    'swipe-fingers',
-    this.swipeFinger,
-    'value',
-    Gio.SettingsBindFlags.DEFAULT,
-  );
-
-  // Return our widget which will be added to the window
-  return prefsWidget;
+    group.add(prefsWidget);
+    page.add(group);
+    window.add(page);
+  }
 }
+
+export default Preferences;

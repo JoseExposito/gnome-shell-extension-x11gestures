@@ -16,27 +16,23 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject, Shell, Clutter } = imports.gi;
-const { wm, overview } = imports.ui.main;
-const Main = imports.ui.main;
+import Clutter from 'gi://Clutter';
+import GObject from 'gi://GObject';
+import Shell from 'gi://Shell';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import SwipeTracker40 from './SwipeTracker40.js';
+import { GestureType, GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
+import ToucheggConfig from '../touchegg/ToucheggConfig.js';
+import AllowedGesture from '../utils/AllowedGesture.js';
+import logger from '../utils/Logger.js';
 
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { SwipeTracker40 } = SRC.v40.SwipeTracker40;
-const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
-const { ToucheggConfig } = SRC.touchegg.ToucheggConfig;
-const { AllowedGesture } = SRC.utils.AllowedGesture;
-const { logger } = SRC.utils.Logger;
-
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = Me.imports.convenience;
+const { wm, overview } = Main;
 
 /**
  * Entry point for GNOME Shell 40.
  */
 class EntryPoint40Class extends GObject.Object {
-  static start() {
-    const settings = Convenience.getSettings('org.gnome.shell.extensions.x11gestures');
+  static start(settings) {
     const fingers = settings.get_int('swipe-fingers');
     const cfg = { fingers };
 
@@ -176,5 +172,5 @@ class EntryPoint40Class extends GObject.Object {
   }
 }
 
-var EntryPoint40 = // eslint-disable-line
-  GObject.registerClass(EntryPoint40Class);
+const EntryPoint40 = GObject.registerClass(EntryPoint40Class);
+export default EntryPoint40;

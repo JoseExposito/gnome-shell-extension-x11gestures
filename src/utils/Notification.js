@@ -16,9 +16,11 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject, Gtk, Gdk } = imports.gi;
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
+import Gdk from 'gi://Gdk';
+import GObject from 'gi://GObject';
+import Gtk from 'gi://Gtk';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 
 class NotificationClass extends GObject.Object {
   static send(title, text, url) {
@@ -35,5 +37,5 @@ class NotificationClass extends GObject.Object {
   }
 }
 
-var Notification = // eslint-disable-line
-  GObject.registerClass(NotificationClass);
+const Notification = GObject.registerClass(NotificationClass);
+export default Notification;

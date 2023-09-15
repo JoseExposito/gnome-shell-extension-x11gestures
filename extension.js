@@ -16,17 +16,17 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { Meta } = imports.gi;
+/* eslint-disable class-methods-use-this */
+import Meta from 'gi://Meta';
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
+import EntryPointFactory from './src/EntryPointFactory.js';
+import toucheggClient from './src/touchegg/ToucheggClient.js';
+import ToucheggConfig from './src/touchegg/ToucheggConfig.js';
+import Notification from './src/utils/Notification.js';
+import logger from './src/utils/Logger.js';
 
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { EntryPointFactory } = SRC.EntryPointFactory;
-const { toucheggClient } = SRC.touchegg.ToucheggClient;
-const { ToucheggConfig } = SRC.touchegg.ToucheggConfig;
-const { Notification } = SRC.utils.Notification;
-const { logger } = SRC.utils.Logger;
-
-class Extension {
-  static enable() {
+class X11GesturesExtension extends Extension {
+  enable() {
     logger.log('Extension enabled');
 
     if (Meta.is_wayland_compositor()) {
@@ -50,10 +50,12 @@ class Extension {
     }
 
     toucheggClient.stablishConnection();
-    entryPoint.start();
+
+    const settings = this.getSettings('org.gnome.shell.extensions.x11gestures');
+    entryPoint.start(settings);
   }
 
-  static disable() {
+  disable() {
     logger.log('Extension disabled');
 
     toucheggClient.closeConnection();
@@ -65,7 +67,4 @@ class Extension {
   }
 }
 
-// eslint-disable-next-line
-function init() {
-  return Extension;
-}
+export default X11GesturesExtension;

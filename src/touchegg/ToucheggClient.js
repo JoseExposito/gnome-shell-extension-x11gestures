@@ -16,14 +16,10 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const {
-  GObject,
-  GLib,
-  Gio,
-} = imports.gi;
-
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { logger } = SRC.utils.Logger;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import logger from '../utils/Logger.js';
 
 /**
  * Daemon D-Bus address.
@@ -229,5 +225,5 @@ const ToucheggClient = GObject.registerClass({
   }
 });
 
-var toucheggClient = // eslint-disable-line
-  new ToucheggClient();
+const toucheggClient = new ToucheggClient();
+export default toucheggClient;

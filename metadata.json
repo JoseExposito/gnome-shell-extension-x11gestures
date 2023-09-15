@@ -5,12 +5,7 @@
   "version": 17,
   "url": "https://github.com/JoseExposito/gnome-shell-extension-x11gestures",
   "shell-version": [
-    "3.36",
-    "3.38",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44"
+    "45.rc",
+    "45"
   ]
 }

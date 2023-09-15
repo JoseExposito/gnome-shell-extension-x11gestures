@@ -16,18 +16,17 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject } = imports.gi;
-const ShellVersion = imports.misc.config.PACKAGE_VERSION;
-
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { EntryPoint40 } = SRC.v40.EntryPoint40;
-const { logger } = SRC.utils.Logger;
+import GObject from 'gi://GObject';
+import * as Config from 'resource:///org/gnome/shell/misc/config.js';
+import EntryPoint40 from './v40/EntryPoint40.js';
+import logger from './utils/Logger.js';
 
 /**
  * Factory to build an entry point based on the current GNOME Shell version.
  */
 class EntryPointFactoryClass extends GObject.Object {
   static buildEntryPoint() {
+    const ShellVersion = Config.PACKAGE_VERSION;
     logger.log(`Building entry point for GNOME Shell ${ShellVersion}`);
 
     if (ShellVersion.startsWith('4')) {
@@ -38,5 +37,5 @@ class EntryPointFactoryClass extends GObject.Object {
   }
 }
 
-var EntryPointFactory = // eslint-disable-line
-  GObject.registerClass(EntryPointFactoryClass);
+const EntryPointFactory = GObject.registerClass(EntryPointFactoryClass);
+export default EntryPointFactory;

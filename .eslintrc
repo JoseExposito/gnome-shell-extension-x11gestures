@@ -37,6 +37,18 @@
         ]
       }
     ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "gi://*",
+          "resource://*"
+        ]
+      }
+    ],
+    "import/extensions": [
+      "off"
+    ],
     "jsdoc/require-hyphen-before-param-description": [
       "error",
       "never"
@@ -50,7 +62,6 @@
   "globals": {
     "log": "readonly",
     "logError": "readonly",
-    "imports": "readonly",
     "pkg": "readonly",
     "_": "readonly",
     "window": "readonly",

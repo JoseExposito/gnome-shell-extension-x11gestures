@@ -16,7 +16,7 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject } = imports.gi;
+import GObject from 'gi://GObject';
 
 /**
  * Utility class to print information to the log prefixing it with the extension name.
@@ -24,7 +24,7 @@ const { GObject } = imports.gi;
 const Logger = GObject.registerClass(
   class Logger extends GObject.Object {
     _init() {
-      this.extensionName = imports.misc.extensionUtils.getCurrentExtension().uuid;
+      this.extensionName = 'x11gestures@joseexposito.github.io';
     }
 
     /**
@@ -48,5 +48,5 @@ const Logger = GObject.registerClass(
   },
 );
 
-var logger = // eslint-disable-line
-  new Logger();
+const logger = new Logger();
+export default logger;

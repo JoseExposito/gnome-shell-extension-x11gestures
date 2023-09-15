@@ -16,13 +16,13 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-var GestureType = { // eslint-disable-line
+export const GestureType = {
   NOT_SUPPORTED: 0,
   SWIPE: 1,
   PINCH: 2,
 };
 
-var GestureDirection = { // eslint-disable-line
+export const GestureDirection = {
   UNKNOWN: 0,
 
   // GestureType.SWIPE
@@ -36,7 +36,7 @@ var GestureDirection = { // eslint-disable-line
   OUT: 6,
 };
 
-var DeviceType = { // eslint-disable-line
+export const DeviceType = {
   UNKNOWN: 0,
   TOUCHPAD: 1,
   TOUCHSCREEN: 2,

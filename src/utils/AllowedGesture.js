@@ -16,10 +16,8 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject } = imports.gi;
-
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { GestureType, GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
+import GObject from 'gi://GObject';
+import { GestureType, GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
 
 /**
  * Utility class used to pass extra settings to our custom SwipeTracker and know if a certain
@@ -63,5 +61,5 @@ class AllowedGestureClass extends GObject.Object {
   }
 }
 
-var AllowedGesture = // eslint-disable-line
-  GObject.registerClass(AllowedGestureClass);
+const AllowedGesture = GObject.registerClass(AllowedGestureClass);
+export default AllowedGesture;

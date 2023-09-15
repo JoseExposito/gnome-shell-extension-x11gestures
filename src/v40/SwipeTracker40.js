@@ -17,14 +17,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 /* eslint-disable no-underscore-dangle */
-const { GObject, Gio } = imports.gi;
-const { SwipeTracker } = imports.ui.swipeTracker;
-
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { toucheggClient } = SRC.touchegg.ToucheggClient;
-const { GestureDirection, DeviceType } = SRC.touchegg.ToucheggTypes;
-const { AllowedGesture } = SRC.utils.AllowedGesture;
-const { logger } = SRC.utils.Logger;
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import { SwipeTracker } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
+import toucheggClient from '../touchegg/ToucheggClient.js';
+import { GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
+import AllowedGesture from '../utils/AllowedGesture.js';
+import logger from '../utils/Logger.js';
 
 const TOUCHPAD_BASE_HEIGHT = 300;
 const TOUCHPAD_BASE_WIDTH = 400;
@@ -112,5 +111,5 @@ class SwipeTracker40Class extends SwipeTracker {
   }
 }
 
-var SwipeTracker40 = // eslint-disable-line
-  GObject.registerClass(SwipeTracker40Class);
+const SwipeTracker40 = GObject.registerClass(SwipeTracker40Class);
+export default SwipeTracker40;

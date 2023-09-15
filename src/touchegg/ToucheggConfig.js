@@ -16,13 +16,15 @@
  * You should have received a copy of the  GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-const { GObject, Gio, GLib } = imports.gi;
-const ByteArray = imports.byteArray;
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import { GestureType, GestureDirection } from './ToucheggTypes.js';
+import AllowedGesture from '../utils/AllowedGesture.js';
+import logger from '../utils/Logger.js';
 
-const SRC = imports.misc.extensionUtils.getCurrentExtension().imports.src;
-const { GestureType, GestureDirection } = SRC.touchegg.ToucheggTypes;
-const { AllowedGesture } = SRC.utils.AllowedGesture;
-const { logger } = SRC.utils.Logger;
+// eslint-disable-next-line
+const ByteArray = imports.byteArray;
 
 class ToucheggConfigClass extends GObject.Object {
   /**
@@ -193,5 +195,5 @@ class ToucheggConfigClass extends GObject.Object {
   }
 }
 
-var ToucheggConfig = // eslint-disable-line
-  GObject.registerClass(ToucheggConfigClass);
+const ToucheggConfig = GObject.registerClass(ToucheggConfigClass);
+export default ToucheggConfig;

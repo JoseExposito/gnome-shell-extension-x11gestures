@@ -29,7 +29,6 @@ const Logger = GObject.registerClass(
 
     /**
      * Log an informative message.
-     *
      * @param {string} text Text to log.
      */
     log(text) {
@@ -38,7 +37,6 @@ const Logger = GObject.registerClass(
 
     /**
      * Log a error message.
-     *
      * @param {string} text Text to log.
      * @param {Error} error JS Error object.
      */

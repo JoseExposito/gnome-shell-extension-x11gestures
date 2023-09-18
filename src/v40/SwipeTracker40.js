@@ -39,7 +39,6 @@ const PERCENTAGE_MULTIPLIER = 3.5;
 class SwipeTracker40Class extends SwipeTracker {
   /**
    * Default constructor.
-   *
    * @param {object} actor @see SwipeTracker.
    * @param {number} orientation @see SwipeTracker.
    * @param {number} allowedModes @see SwipeTracker.

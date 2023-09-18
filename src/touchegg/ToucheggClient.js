@@ -115,8 +115,15 @@ const ToucheggClient = GObject.registerClass({
         logger.log('Connection with Touchégg established');
         connected = true;
 
-        this.connection.signal_subscribe(null, DBUS_INTERFACE_NAME, null, DBUS_OBJECT_PATH,
-          null, Gio.DBusSignalFlags.NONE, this.onNewMessage);
+        this.connection.signal_subscribe(
+          null,
+          DBUS_INTERFACE_NAME,
+          null,
+          DBUS_OBJECT_PATH,
+          null,
+          Gio.DBusSignalFlags.NONE,
+          this.onNewMessage,
+        );
         this.connection.connect('closed', this.onDisconnected);
       } catch (error) {
         logger.log(`Error connecting to Touchégg daemon: ${error && error.message}`);

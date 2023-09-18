@@ -26,7 +26,6 @@ import { GestureType, GestureDirection, DeviceType } from '../touchegg/ToucheggT
 class AllowedGestureClass extends GObject.Object {
   /**
    * Default constructor.
-   *
    * @param {GestureType} type Array of allowed GestureType.
    * @param {number} fingers Array of allowed number of fingers.
    * @param {GestureDirection[]} directions Array of allowed GestureDirection.

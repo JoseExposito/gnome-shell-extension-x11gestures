@@ -37,7 +37,6 @@ class ToucheggConfigClass extends GObject.Object {
   /**
    * Update Touchégg config to disable the gestures used by this extension.
    * GJS doesn't have a proper XML parser, so this is a hack.
-   *
    * @param {AllowedGesture[]} allowedGestures Array of gestures used by the extension.
    */
   static async update(allowedGestures) {
@@ -108,7 +107,6 @@ class ToucheggConfigClass extends GObject.Object {
 
   /**
    * Create a directory if doesn't exists yet.
-   *
    * @param {string} path Directory path.
    */
   static createDir(path) {
@@ -127,8 +125,12 @@ class ToucheggConfigClass extends GObject.Object {
       const file = Gio.File.new_for_path(path);
       // replace_contents_async doesn't work:
       // https://gitlab.gnome.org/GNOME/gjs/-/issues/192
-      file.replace_contents_bytes_async(ByteArray.toGBytes(ByteArray.fromString(contents, 'UTF-8')),
-        null, true, Gio.FileCreateFlags.NONE, null,
+      file.replace_contents_bytes_async(
+        ByteArray.toGBytes(ByteArray.fromString(contents, 'UTF-8')),
+        null,
+        true,
+        Gio.FileCreateFlags.NONE,
+        null,
         (self, res) => {
           const [success, etag] = file.replace_contents_finish(res);
           GLib.free(etag);
@@ -138,7 +140,8 @@ class ToucheggConfigClass extends GObject.Object {
           } else {
             resolve();
           }
-        });
+        },
+      );
     });
   }
 

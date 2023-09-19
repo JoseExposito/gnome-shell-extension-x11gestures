@@ -23,15 +23,13 @@ import GObject from 'gi://GObject';
  */
 const Logger = GObject.registerClass(
   class Logger extends GObject.Object {
-    _init() {
-      this.extensionName = 'x11gestures@joseexposito.github.io';
-    }
+    static extensionName = 'x11gestures@joseexposito.github.io';
 
     /**
      * Log an informative message.
      * @param {string} text Text to log.
      */
-    log(text) {
+    static log(text) {
       log(`[${this.extensionName}] ${text}`);
     }
 
@@ -40,11 +38,10 @@ const Logger = GObject.registerClass(
      * @param {string} text Text to log.
      * @param {Error} error JS Error object.
      */
-    error(text, error) {
+    static error(text, error) {
       logError(error, `[${this.extensionName}] ${text}`);
     }
   },
 );
 
-const logger = new Logger();
-export default logger;
+export default Logger;

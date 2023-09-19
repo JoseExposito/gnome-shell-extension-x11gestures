@@ -20,7 +20,7 @@
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import { SwipeTracker } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
-import toucheggClient from '../touchegg/ToucheggClient.js';
+import ToucheggClient from '../touchegg/ToucheggClient.js';
 import { GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
 import AllowedGesture from '../utils/AllowedGesture.js';
 import logger from '../utils/Logger.js';
@@ -60,6 +60,7 @@ class SwipeTracker40Class extends SwipeTracker {
 
     // Connect the Touchégg client to the swipe tracker to start receiving events
     logger.log('Connecting Touchégg client signals');
+    const toucheggClient = ToucheggClient.getInstance();
     toucheggClient.connect('begin', this.onToucheggGestureBegin);
     toucheggClient.connect('update', this.onToucheggGestureUpdate);
     toucheggClient.connect('end', this.onToucheggGestureEnd);

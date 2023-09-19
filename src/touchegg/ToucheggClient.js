@@ -92,6 +92,16 @@ const ToucheggClient = GObject.registerClass({
     },
   },
 }, class ToucheggClient extends GObject.Object {
+  static instance = null;
+
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new ToucheggClient();
+    }
+
+    return this.instance;
+  }
+
   _init() {
     super._init();
     this.onNewMessage = this.onNewMessage.bind(this);
@@ -232,5 +242,4 @@ const ToucheggClient = GObject.registerClass({
   }
 });
 
-const toucheggClient = new ToucheggClient();
-export default toucheggClient;
+export default ToucheggClient;

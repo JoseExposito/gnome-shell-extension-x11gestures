@@ -20,7 +20,7 @@
 import Meta from 'gi://Meta';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 import EntryPointFactory from './src/EntryPointFactory.js';
-import toucheggClient from './src/touchegg/ToucheggClient.js';
+import ToucheggClient from './src/touchegg/ToucheggClient.js';
 import ToucheggConfig from './src/touchegg/ToucheggConfig.js';
 import Notification from './src/utils/Notification.js';
 import logger from './src/utils/Logger.js';
@@ -49,6 +49,7 @@ class X11GesturesExtension extends Extension {
       );
     }
 
+    const toucheggClient = ToucheggClient.getInstance();
     toucheggClient.stablishConnection();
 
     const settings = this.getSettings('org.gnome.shell.extensions.x11gestures');
@@ -58,6 +59,7 @@ class X11GesturesExtension extends Extension {
   disable() {
     logger.log('Extension disabled');
 
+    const toucheggClient = ToucheggClient.getInstance();
     toucheggClient.closeConnection();
 
     const entryPoint = EntryPointFactory.buildEntryPoint();

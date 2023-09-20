@@ -178,13 +178,15 @@ const ToucheggClient = GObject.registerClass({
     });
   }
 
-  static sleep(time) {
-    return new Promise((resolve) => {
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, () => {
-        resolve();
+  static async sleep(time) {
+    const timeoutId = await new Promise((resolve) => {
+      const ret = GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, () => {
+        resolve(ret);
         return GLib.SOURCE_REMOVE;
       });
     });
+
+    GLib.source_remove(timeoutId);
   }
 
   onNewMessage(connection, senderName, objectPath, interfaceName, signalName, parameters) {

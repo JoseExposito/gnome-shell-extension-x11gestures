@@ -45,7 +45,6 @@ class X11GesturesExtension extends Extension {
       Notification.send(
         'Touchégg is not installed',
         'Please install Touchégg to enable multi-touch gestures',
-        'https://github.com/JoseExposito/touchegg#readme',
       );
     }
 

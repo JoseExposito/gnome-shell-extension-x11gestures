@@ -23,9 +23,6 @@ import { GestureType, GestureDirection } from './ToucheggTypes.js';
 import AllowedGesture from '../utils/AllowedGesture.js';
 import logger from '../utils/Logger.js';
 
-// eslint-disable-next-line
-const ByteArray = imports.byteArray;
-
 class ToucheggConfigClass extends GObject.Object {
   /**
    * @returns {boolean} If Touchégg is installed or not.
@@ -97,7 +94,8 @@ class ToucheggConfigClass extends GObject.Object {
           GLib.free(contents);
           reject(new Error('Error loading config file'));
         } else {
-          const str = ByteArray.toString(contents, 'UTF-8');
+          const decoder = new TextDecoder('utf-8');
+          const str = decoder.decode(contents);
           GLib.free(contents);
           resolve(str);
         }
@@ -123,10 +121,12 @@ class ToucheggConfigClass extends GObject.Object {
   static writeFile(path, contents) {
     return new Promise((resolve, reject) => {
       const file = Gio.File.new_for_path(path);
+      const encoder = new TextEncoder();
+
       // replace_contents_async doesn't work:
       // https://gitlab.gnome.org/GNOME/gjs/-/issues/192
       file.replace_contents_bytes_async(
-        ByteArray.toGBytes(ByteArray.fromString(contents, 'UTF-8')),
+        encoder.encode(contents),
         null,
         true,
         Gio.FileCreateFlags.NONE,

@@ -6,7 +6,8 @@ to start testing your changes is to create a symbolic link:
 ```bash
 $ glib-compile-schemas schemas
 $ mkdir -p ~/.local/share/gnome-shell/extensions
-$ ln -s `pwd` ~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io
+$ rm -fr ~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io ; \
+  cp -r `pwd` ~/.local/share/gnome-shell/extensions/x11gestures@joseexposito.github.io
 ```
 
 And restart GNOME Shell by pressing `Alt+F2` to open the Run Dialog and enter `restart` or `r`.

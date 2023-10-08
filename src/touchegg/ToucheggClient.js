@@ -181,7 +181,7 @@ const ToucheggClient = GObject.registerClass({
   }
 
   static async sleep(time) {
-    const timeoutId = await new Promise((resolve) => {
+    let timeoutId = await new Promise((resolve) => {
       const ret = GLib.timeout_add(GLib.PRIORITY_DEFAULT, time, () => {
         resolve(ret);
         return GLib.SOURCE_REMOVE;
@@ -189,6 +189,7 @@ const ToucheggClient = GObject.registerClass({
     });
 
     GLib.source_remove(timeoutId);
+    timeoutId = null;
   }
 
   onNewMessage(connection, senderName, objectPath, interfaceName, signalName, parameters) {

@@ -101,7 +101,7 @@ class SwipeTracker40Class extends SwipeTracker {
 
       const isTouchpad = (device === DeviceType.TOUCHPAD);
 
-      this._endGesture(this, time, distance, isTouchpad);
+      this._endGesture(time, distance, isTouchpad);
     }
   }
 

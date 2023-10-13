@@ -102,6 +102,10 @@ const ToucheggClient = GObject.registerClass({
     return this.instance;
   }
 
+  static removeInstance() {
+    this.instance = null;
+  }
+
   _init() {
     super._init();
     this.onNewMessage = this.onNewMessage.bind(this);
@@ -153,8 +157,6 @@ const ToucheggClient = GObject.registerClass({
     } catch (error) {
       // Ignore this error, the extension is being disabled as this point
     }
-
-    ToucheggClient.instance = null;
   }
 
   static dbusConnect() {

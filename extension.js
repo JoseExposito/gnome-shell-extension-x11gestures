@@ -60,6 +60,7 @@ class X11GesturesExtension extends Extension {
 
     const toucheggClient = ToucheggClient.getInstance();
     toucheggClient.closeConnection();
+    ToucheggClient.removeInstance();
 
     const entryPoint = EntryPointFactory.buildEntryPoint();
     if (entryPoint) {

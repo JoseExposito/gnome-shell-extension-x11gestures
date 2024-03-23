@@ -22,4 +22,6 @@ Enable GNOME Shell multi-touch gestures on X11 with this extension.
   <a href='https://extensions.gnome.org/extension/4033/x11-gestures/'>
     <img width='240' alt='Download on GNOME Shell Extensions' src='.github/images/get-it-on-ego.svg'/>
   </a>
+
+  [How to install GNOME Extensions?](https://wiki.gnome.org/Projects/GnomeShellIntegration/Installation)
 </div>

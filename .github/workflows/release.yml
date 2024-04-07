@@ -26,7 +26,7 @@ jobs:
 
       - name: Build archive
         run: |
-          zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js prefs.js convenience.js metadata.json src schemas
+          zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js prefs.js metadata.json src schemas
 
       - name: Upload archive artifact
         uses: "actions/upload-artifact@v2"

@@ -29,7 +29,7 @@ jobs:
           zip -r x11gestures@joseexposito.github.io.zip COPYING COPYRIGHT extension.js prefs.js metadata.json src schemas
 
       - name: Upload archive artifact
-        uses: "actions/upload-artifact@v2"
+        uses: "actions/upload-artifact@v4"
         with:
           name: "x11gestures@joseexposito.github.io.zip"
           path: "${{ github.workspace }}/x11gestures@joseexposito.github.io.zip"

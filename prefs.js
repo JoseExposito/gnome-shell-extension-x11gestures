@@ -73,10 +73,10 @@ class Preferences extends ExtensionPreferences {
 
     for (const direction of ['vertical', 'horizontal']) {
       const invertDirectionLabel = new Gtk.Label({
-        label: 'Invert ' + direction + ' swipe direction',
+        label: `Invert ${direction} swipe direction`,
         halign: Gtk.Align.START,
         visible: true,
-      })
+      });
 
       const invertDirection = new Gtk.Switch({
         halign: Gtk.Align.END,
@@ -85,12 +85,12 @@ class Preferences extends ExtensionPreferences {
 
       this.invertDirection.push(invertDirection);
 
-      prefsWidget.attach(invertDirectionLabel, 0, this.invertDirection.length, 1, 1)
+      prefsWidget.attach(invertDirectionLabel, 0, this.invertDirection.length, 1, 1);
       prefsWidget.attach(invertDirection, 1, this.invertDirection.length, 1, 1);
 
       // eslint-disable-next-line no-underscore-dangle
       window._settings.bind(
-        'swipe-invert-' + direction,
+        `swipe-invert-${direction}`,
         invertDirection,
         'active',
         Gio.SettingsBindFlags.DEFAULT,

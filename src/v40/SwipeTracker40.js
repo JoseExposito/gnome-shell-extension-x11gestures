@@ -53,6 +53,9 @@ class SwipeTracker40Class extends SwipeTracker {
     this.touchpadSettings = new Gio.Settings({
       schema_id: 'org.gnome.desktop.peripherals.touchpad',
     });
+    this.extensionSettings = new Gio.Settings({
+      schema_id: 'org.gnome.shell.extensions.x11gestures',
+    })
 
     this.onToucheggGestureBegin = this.onToucheggGestureBegin.bind(this);
     this.onToucheggGestureUpdate = this.onToucheggGestureUpdate.bind(this);
@@ -81,8 +84,8 @@ class SwipeTracker40Class extends SwipeTracker {
         || direction === GestureDirection.DOWN)
         ? (percentage - this.previosPercentage)
         : (this.previosPercentage - percentage);
-      const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
-      const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
+
+      const delta = percentageDelta * this.getInvertModifier(direction) * PERCENTAGE_MULTIPLIER;
       this.previosPercentage = percentage;
 
       const distance = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)
@@ -103,6 +106,18 @@ class SwipeTracker40Class extends SwipeTracker {
 
       this._endGesture(time, distance, isTouchpad);
     }
+  }
+
+  getInvertModifier(direction) {
+    const naturalScrollModifier = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
+    let settingsKey = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)
+      ? 'swipe-invert-horizontal'
+      : 'swipe-invert-vertical';
+
+
+    const invertModifier = this.extensionSettings.get_boolean(settingsKey) ? -1 : 1;
+
+    return naturalScrollModifier * invertModifier;
   }
 
   static getMousePosition() {

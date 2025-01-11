@@ -43,7 +43,7 @@ class Preferences extends ExtensionPreferences {
 
     // Create a label & switch for `show-indicator`
     const swipeFingerLabel = new Gtk.Label({
-      label: 'Number of fingers for Swipe action',
+      label: 'Number of fingers for swipe action',
       halign: Gtk.Align.START,
       visible: true,
     });
@@ -71,29 +71,28 @@ class Preferences extends ExtensionPreferences {
 
     this.invertDirection = [];
 
-    for (const direction in ['vertical', 'horizontal']) {
-      const invertLabel = new Gtk.Label({
+    for (const direction of ['vertical', 'horizontal']) {
+      const invertDirectionLabel = new Gtk.Label({
         label: 'Invert ' + direction + ' swipe direction',
         halign: Gtk.Align.START,
         visible: true,
       })
 
-      prefsWidget.attach(invertLabel, 0, 0, 1, 1);
-
       const invertDirection = new Gtk.Switch({
-        halign: Gtk.Align.End,
+        halign: Gtk.Align.END,
         visible: true,
       });
 
       this.invertDirection.push(invertDirection);
 
-      prefsWidget.attach(invertDirection, 1, 0, 1, 1)
+      prefsWidget.attach(invertDirectionLabel, 0, this.invertDirection.length, 1, 1)
+      prefsWidget.attach(invertDirection, 1, this.invertDirection.length, 1, 1);
 
       // eslint-disable-next-line no-underscore-dangle
       window._settings.bind(
         'swipe-invert-' + direction,
         invertDirection,
-        'value',
+        'active',
         Gio.SettingsBindFlags.DEFAULT,
       );
     }

@@ -69,6 +69,35 @@ class Preferences extends ExtensionPreferences {
       Gio.SettingsBindFlags.DEFAULT,
     );
 
+    this.invertDirection = [];
+
+    for (const direction in ['vertical', 'horizontal']) {
+      const invertLabel = new Gtk.Label({
+        label: 'Invert ' + direction + ' swipe direction',
+        halign: Gtk.Align.START,
+        visible: true,
+      })
+
+      prefsWidget.attach(invertLabel, 0, 0, 1, 1);
+
+      const invertDirection = new Gtk.Switch({
+        halign: Gtk.Align.End,
+        visible: true,
+      });
+
+      this.invertDirection.push(invertDirection);
+
+      prefsWidget.attach(invertDirection, 1, 0, 1, 1)
+
+      // eslint-disable-next-line no-underscore-dangle
+      window._settings.bind(
+        'swipe-invert-' + direction,
+        invertDirection,
+        'value',
+        Gio.SettingsBindFlags.DEFAULT,
+      );
+    }
+
     group.add(prefsWidget);
     page.add(group);
     window.add(page);

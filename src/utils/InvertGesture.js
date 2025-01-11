@@ -26,10 +26,8 @@ import { GestureDirection } from '../touchegg/ToucheggTypes.js';
 class InvertGestureClass extends GObject.Object {
   /**
    * Default constructor.
-   * @param {invertVertical} bool Invert vertical swipes.
-   * @param {invertHorizontal} bool Invert horizontal swipes.
-   * @param invertVertical
-   * @param invertHorizontal
+   * @param {boolean} invertVertical Invert vertical swipes.
+   * @param {boolean} invertHorizontal Invert horizontal swipes.
    */
   _init(invertVertical, invertHorizontal) {
     this.invertVertical = invertVertical;
@@ -42,8 +40,8 @@ class InvertGestureClass extends GObject.Object {
 
   /**
    * Get the modifier for gestures.
-   * @param {GestureDirection} direction
-   * @returns {-1|1}
+   * @param {GestureDirection} direction Gesture direction.
+   * @returns {-1|1} Modifier for swipe delta.
    */
   getModifier(direction) {
     if (direction === GestureDirection.UP || direction === GestureDirection.DOWN) {

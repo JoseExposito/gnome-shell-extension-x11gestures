@@ -71,7 +71,7 @@ class Preferences extends ExtensionPreferences {
 
     this.invertDirection = [];
 
-    for (const direction of ['vertical', 'horizontal']) {
+    ['vertical', 'horizontal'].forEach((direction) => {
       const invertDirectionLabel = new Gtk.Label({
         label: `Invert ${direction} swipe direction`,
         halign: Gtk.Align.START,
@@ -95,7 +95,7 @@ class Preferences extends ExtensionPreferences {
         'active',
         Gio.SettingsBindFlags.DEFAULT,
       );
-    }
+    });
 
     group.add(prefsWidget);
     page.add(group);

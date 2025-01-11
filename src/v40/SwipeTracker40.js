@@ -76,12 +76,13 @@ class SwipeTracker40Class extends SwipeTracker {
 
   onToucheggGestureUpdate(gesture, type, direction, percentage, fingers, device, time) {
     if (this.allowedGesture.isAllowed(type, fingers, direction, device)) {
+      const invertModifier = this.invertGesture.getModifier(direction);
       const percentageDelta = (direction === GestureDirection.RIGHT
         || direction === GestureDirection.DOWN)
         ? (percentage - this.previosPercentage)
         : (this.previosPercentage - percentage);
 
-      const delta = percentageDelta * this.invertGesture.getModifier(direction) * PERCENTAGE_MULTIPLIER;
+      const delta = invertModifier * percentageDelta * PERCENTAGE_MULTIPLIER;
       this.previosPercentage = percentage;
 
       const distance = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)

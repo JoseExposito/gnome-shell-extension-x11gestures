@@ -24,6 +24,7 @@ import SwipeTracker40 from './SwipeTracker40.js';
 import { GestureType, GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
 import ToucheggConfig from '../touchegg/ToucheggConfig.js';
 import AllowedGesture from '../utils/AllowedGesture.js';
+import InvertGesture from '../utils/InvertGesture.js';
 import logger from '../utils/Logger.js';
 
 const { wm, overview } = Main;
@@ -34,7 +35,9 @@ const { wm, overview } = Main;
 class EntryPoint40Class extends GObject.Object {
   static start(settings) {
     const fingers = settings.get_int('swipe-fingers');
-    const cfg = { fingers };
+    const invertVertical = settings.get_boolean('swipe-invert-vertical');
+    const invertHorizontal = settings.get_boolean('swipe-invert-horizontal');
+    const cfg = { fingers, invertVertical, invertHorizontal };
 
     const allowedGestures = [
       EntryPoint40Class.hookGlobalSwitchDesktop(cfg),
@@ -45,7 +48,7 @@ class EntryPoint40Class extends GObject.Object {
     ToucheggConfig.update(allowedGestures);
   }
 
-  static hookGlobalSwitchDesktop({ fingers }) {
+  static hookGlobalSwitchDesktop({ fingers, invertVertical, invertHorizontal }) {
     logger.log('Hooking global switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -55,12 +58,15 @@ class EntryPoint40Class extends GObject.Object {
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
+    const invertGesture = new InvertGesture(invertVertical, invertHorizontal);
+
     const tracker = new SwipeTracker40(
       global.stage,
       Clutter.Orientation.HORIZONTAL,
       Shell.ActionMode.NORMAL,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertGesture,
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -77,7 +83,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookGlobalOverview({ fingers }) {
+  static hookGlobalOverview({ fingers, invertVertical, invertHorizontal }) {
     logger.log('Hooking global activities/overview gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -87,12 +93,15 @@ class EntryPoint40Class extends GObject.Object {
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
+    const invertGesture = new InvertGesture(invertVertical, invertHorizontal);
+
     const tracker = new SwipeTracker40(
       global.stage,
       Clutter.Orientation.VERTICAL,
       Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW, // eslint-disable-line no-bitwise
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertGesture,
     );
 
     /* eslint-disable no-underscore-dangle */
@@ -108,7 +117,7 @@ class EntryPoint40Class extends GObject.Object {
     return allowedGesture;
   }
 
-  static hookActivitiesSwitchDesktop({ fingers }) {
+  static hookActivitiesSwitchDesktop({ fingers, invertVertical, invertHorizontal }) {
     logger.log('Hooking activities view switch desktop gestures');
 
     const allowedGesture = new AllowedGesture(
@@ -118,12 +127,15 @@ class EntryPoint40Class extends GObject.Object {
       [DeviceType.TOUCHPAD, DeviceType.TOUCHSCREEN],
     );
 
+    const invertGesture = new InvertGesture(invertVertical, invertHorizontal);
+
     const tracker = new SwipeTracker40(
       Main.layoutManager.overviewGroup,
       Clutter.Orientation.HORIZONTAL,
       Shell.ActionMode.OVERVIEW,
       { allowDrag: false, allowScroll: false },
       allowedGesture,
+      invertGesture,
     );
     tracker.allowLongSwipes = true;
 

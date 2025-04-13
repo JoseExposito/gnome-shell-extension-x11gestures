@@ -17,12 +17,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 /* eslint-disable no-underscore-dangle */
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import { SwipeTracker } from 'resource:///org/gnome/shell/ui/swipeTracker.js';
 import ToucheggClient from '../touchegg/ToucheggClient.js';
 import { GestureDirection, DeviceType } from '../touchegg/ToucheggTypes.js';
 import AllowedGesture from '../utils/AllowedGesture.js';
+import InvertGesture from '../utils/InvertGesture.js';
 import logger from '../utils/Logger.js';
 
 const TOUCHPAD_BASE_HEIGHT = 300;
@@ -44,15 +44,14 @@ class SwipeTracker40Class extends SwipeTracker {
    * @param {number} allowedModes @see SwipeTracker.
    * @param {object} params @see SwipeTracker.
    * @param {AllowedGesture} allowedGesture @see AllowedGesture.
+   * @param {InvertGesture} invertGesture @see InvertGesture.
    */
-  _init(actor, orientation, allowedModes, params, allowedGesture) {
+  _init(actor, orientation, allowedModes, params, allowedGesture, invertGesture) {
     super._init(actor, orientation, allowedModes, params);
     logger.log('Creating a new SwipeTracker40');
 
     this.allowedGesture = allowedGesture;
-    this.touchpadSettings = new Gio.Settings({
-      schema_id: 'org.gnome.desktop.peripherals.touchpad',
-    });
+    this.invertGesture = invertGesture;
 
     this.onToucheggGestureBegin = this.onToucheggGestureBegin.bind(this);
     this.onToucheggGestureUpdate = this.onToucheggGestureUpdate.bind(this);
@@ -77,12 +76,13 @@ class SwipeTracker40Class extends SwipeTracker {
 
   onToucheggGestureUpdate(gesture, type, direction, percentage, fingers, device, time) {
     if (this.allowedGesture.isAllowed(type, fingers, direction, device)) {
+      const invertModifier = this.invertGesture.getModifier(direction);
       const percentageDelta = (direction === GestureDirection.RIGHT
         || direction === GestureDirection.DOWN)
         ? (percentage - this.previosPercentage)
         : (this.previosPercentage - percentage);
-      const naturalScroll = this.touchpadSettings.get_boolean('natural-scroll') ? -1 : 1;
-      const delta = percentageDelta * naturalScroll * PERCENTAGE_MULTIPLIER;
+
+      const delta = invertModifier * percentageDelta * PERCENTAGE_MULTIPLIER;
       this.previosPercentage = percentage;
 
       const distance = (direction === GestureDirection.LEFT || direction === GestureDirection.RIGHT)
